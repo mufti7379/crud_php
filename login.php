@@ -1,7 +1,13 @@
 <?php
-session_start();
+include 'config_session.php';
 include 'koneksi.php';
-if(isset($_POST['login'])){
+
+if(isLoggedIn()) {
+    header("Location: home.php");
+    exit();
+}
+
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])){
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $query = "SELECT * FROM pengguna WHERE email='$email'";
@@ -10,12 +16,16 @@ if(isset($_POST['login'])){
     if($result->num_rows > 0){
         $row = mysqli_fetch_assoc($result);
         if(password_verify($password, $row['password'])){
+            session_regenerate_id(true);
             $_SESSION['pengguna'] = [
                 'id' => $row['id_user'],
                 'nama' => $row['nama'],
                 'email' => $row['email'],
                 'role' => $row['role']
             ];
+            
+            $_SESSION['last_activity'] = time();
+            $_SESSION['login_time'] = time();
             header("Location: home.php");
             exit();
         } else {

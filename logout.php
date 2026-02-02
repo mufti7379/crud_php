@@ -1,35 +1,30 @@
 <?php
-session_start();
+if(session_status() == PHP_SESSION_NONE){
+    session_start();
+}
 
-// User is logged in, proceed to logout
-unset($_SESSION['pengguna']);
+$_SESSION = [];
 
-// foreach ($_SESSION as $key => $value) {
-//     unset($_SESSION[$key]);
-// }
-
-// $_SESSION = array();
-
-// if(isset($_COOKIE[session_name()])){
-//     setcookie(session_name(), '', time() - 3600, '/');
-// };
-
-// $_SESSION = array();
-
-// if(ini_get("session.use_cookies")) {
-//     $params = session_get_cookie_params();
-//     setcookie(session_name(), '', time() - 42000,
-//         $params["path"], $params["domain"],
-//         $params["secure"], $params["httponly"]
-//     );
-// }
+if(ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 86400,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
 
 session_destroy();
 
-// header("Cache-Control: no-cache, no-store, must-revalidate, max-age=0");
-// header("Pragma: no-cache");
-// header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
+if(ob_get_level()){
+    ob_end_clean();
+}
+
+header("Cache-Control: no-cache, no-store, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 header("Location: login.php");
+echo '<script>window.location.href = "login.php";</script>';
 exit();
 ?>

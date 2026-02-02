@@ -1,12 +1,9 @@
 <?php
-session_start();
+include 'config_session.php';
 
-$id_user = $_SESSION['pengguna']['id'];
 $nama = $_SESSION['pengguna']['nama'];
-$email = $_SESSION['pengguna']['email'];
-$role = $_SESSION['pengguna']['role'];
 
-if(!isset($_SESSION['pengguna']) || empty($_SESSION['pengguna'])) {
+if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
     header("Pragma: no-cache");
     header("Expires: 0");
@@ -14,9 +11,13 @@ if(!isset($_SESSION['pengguna']) || empty($_SESSION['pengguna'])) {
     exit();
 }
 
+checkSessionTimeout();
+
 header("Cache-Control: no-cache, no-store, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
+
+$user = $_SESSION['pengguna'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -111,7 +112,7 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
             </a> 
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">  
                 <li><a class="dropdown-item" href="#">Profile</a></li> 
-                <li><a class="dropdown-item" href="../admin/login.php">Sign out</a></li> 
+                <li><a class="dropdown-item" href="logout.php">Sign out</a></li> 
             </ul> 
         </div> 
     </aside>
@@ -192,9 +193,16 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
             };
         }
 
-        if(performance.navigation.type === 2) {
-            window.location.href = "login.php"
-        }
+        setInterval(function() {
+            fetch('check_session.php')
+            .then(response => response.json())
+            .then(data => {
+                if(!data.logged_in)  {
+                    alert('Session Anda telah habis. Silakan login kembali.');
+                    window.location.href = 'login.php';
+                }
+            });
+        }, 5000);
     </script>
 </body>
 </html>
