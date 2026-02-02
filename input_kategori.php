@@ -1,8 +1,6 @@
 <?php
 include 'config_session.php';
 
-$nama = $_SESSION['pengguna']['nama'];
-
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
     header("Pragma: no-cache");
@@ -19,12 +17,13 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin Berita BSIP</title>
+    <title>Home Admin Berita BSIP</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -33,8 +32,7 @@ $user = $_SESSION['pengguna'];
         html, body {
             height: 100%;
         }
-
-        .dashboard-content {
+         .dashboard-content {
             display: flex;
             min-height: 100vh;
         }
@@ -51,14 +49,6 @@ $user = $_SESSION['pengguna'];
         .content {
             flex-grow: 1;
             background: #f8f9fa;
-        }
-
-        .container {
-            background: rgb(223, 194, 194);
-            margin-top: 50px;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
         }
 
         .sidebar .nav-link.active,
@@ -84,24 +74,24 @@ $user = $_SESSION['pengguna'];
         </div>
     </nav>
 
-    <div class="dashboard-content">
     <!-- sidebar dekstop -->
-     <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
+    <div class="dashboard-content">
+    <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"> 
         <svg class="bi pe-none me-2" width="40" height="32" aria-hidden="true"><use xlink:href="#bootstrap"></use></svg> <span class="fs-4">Berita BSIP</span> 
         </a> 
         <hr> 
         <ul class="nav nav-pills flex-column mb-auto"> 
             <li class="nav-item"> 
-                <a href="home.php" class="nav-link text-white"> 
+                <a href="home.php" class="nav-link text-white" > 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>Home</a> 
             </li> 
             <li> 
-                <a href="dashboard.php"  class="nav-link active" aria-current="page"> 
+                <a href="dashboard.php"  class="nav-link text-white"> 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Dashboard Berita
                 </a> 
             </li> 
-                <a href="kategori.php" class="nav-link text-white"> 
+                <a href="kategori.php" class="nav-link active" aria-current="page"> 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Kategori
                 </a> 
             </li> 
@@ -124,71 +114,19 @@ $user = $_SESSION['pengguna'];
             </ul> 
         </div> 
     </aside>
-    <main class="content p-2">
-        <h2 class="text-center mt-5 p-5">Selamat Datang <?php echo htmlspecialchars($nama); ?></h2>
-        <div class="input-group mx-auto w-100">
-            <input type="text" class="form-control" placeholder="Search..." aria-label="Search input" aria-describedby="button-addon2">
-            <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
-        </div>
-        <div class="container">
-            <div class="button-input">
-                <a href="input_berita.php" class="btn btn-primary mt-2">+ Tambah Berita</a>
+    <main class="content p-4">
+        <h2 class="text-center mt-5">Input Kategori Berita BSIP</h2>
+        <form class="w-50 mx-auto mt-4">
+            <div class="mb-3">
+                <label for="namaKategori" class="form-label">Nama Kategori</label>
+                <input type="text" class="form-control" id="namaKategori" placeholder="Masukkan nama kategori">
             </div>
-            <table class="table table-bordered mt-4 w-200 mx-auto">
-            <tr>
-                <td class="p-3">No</td>
-                <td class="p-3">Nama Berita</td>
-                <td class="p-3">Deskripsi Berita</td>
-                <td class="p-3">Foto Kegiatan</td>
-                <td class="p-3">Tanggal Publish</td>
-                <td class="p-3">Aksi</td>
-            </tr>
-            <tr>
-                <td class="p-3">1</td>
-                <td class="p-3">Berita 1</td>
-                <td class="p-3">Deskripsi singkat berita 1</td>
-                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="p-3">12-05-2024</td>
-                <td class="p-3">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="p-3">1</td>
-                <td class="p-3">Berita 1</td>
-                <td class="p-3">Deskripsi singkat berita 1</td>
-                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="p-3">12-05-2024</td>
-                <td class="p-3">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="p-3">1</td>
-                <td class="p-3">Berita 1</td>
-                <td class="p-3">Deskripsi singkat berita 1</td>
-                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="p-3">12-05-2024</td>
-                <td class="p-3">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="p-3">1</td>
-                <td class="p-3">Berita 1</td>
-                <td class="p-3">Deskripsi singkat berita 1</td>
-                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="p-3">12-05-2024</td>
-                <td class="p-3">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            </table>
-        </div>
+            <div class="mb-3">
+                <label for="deskripsiKategori" class="form-label">Deskripsi Kategori</label>
+                <textarea class="form-control" id="deskripsiKategori" rows="3" placeholder="Masukkan deskripsi kategori"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        </form>
     </main>
     </div>
     
@@ -205,15 +143,16 @@ $user = $_SESSION['pengguna'];
                     <a class="nav-link text-white" href="home.php">Home</a>
                 </li>
                 <li>
-                    <a class="nav-link active" href="dashboard.php">Dashboard Berita</a>
+                    <a class="nav-link text-white" href="dashboard.php">Dashboard Berita</a>
                 </li>
                 <li>
-                    <a class="nav-link text-white" href="kategori.php">Kategori</a>
+                    <a class="nav-link active" href="kategori.php">Kategori</a>
                 </li>
                 <li>
                     <a class="nav-link text-white" href="#">User</a>
                 </li>
             </ul>
+        
         <!-- admin profile mobile -->
         <div class="d-flex align-items-center gap-2">
             <img src="https://github.com/mdo.png" alt="" width="36" height="36" class="rounded-circle me-2"> 
@@ -222,8 +161,8 @@ $user = $_SESSION['pengguna'];
             <strong>Admin</strong> 
             </a> 
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">  
-                <li><a class="dropdown-item" href="#">Profile</a></li> 
-                <li><a class="dropdown-item" href="logout.php">Sign out</a></li> 
+                <li><a href="#">Profile</a></li> 
+                <li><a href="logout.php" class="btn btn-danger">Logout</a></li> 
             </ul> 
             </div> 
         </div>

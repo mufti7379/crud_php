@@ -51,6 +51,13 @@ $user = $_SESSION['pengguna'];
             background: #f8f9fa;
         }
 
+        .container {
+            background: rgb(223, 194, 194);
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
+        }
+
         .sidebar .nav-link.active,
         .sidebar .nav-link.active:hover {
             background-color: #0d6efd;
@@ -116,7 +123,11 @@ $user = $_SESSION['pengguna'];
     </aside>
     <main class="content p-4">
         <h2 class="text-center mt-5">Pengaturan Kategori Berita BSIP</h2>
-        <table class="table table-bordered mt-4 w-200 mx-auto">
+        <div class="container">
+            <div class="button-input">
+                <a href="input_kategori.php" class="btn btn-primary mt-2">+ Tambah Kategori</a>
+            </div>
+            <table class="table table-bordered mt-4 w-200 mx-auto">
             <tr>
                 <td class="p-3">No</td>
                 <td class="p-3">Nama Kategori</td>
@@ -132,11 +143,10 @@ $user = $_SESSION['pengguna'];
                     <button class="btn btn-sm btn-danger">Hapus</button>
                 </td>
             </tr>
-        </table>
+            </table>
+        </div>
     </main>
     </div>
-    
-
     <!-- Sidebar mobile -->
     <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="sidebarMobile">
         <div class="offcanvas-header">
