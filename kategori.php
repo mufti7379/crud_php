@@ -167,8 +167,8 @@ $user = $_SESSION['pengguna'];
             <strong>Admin</strong> 
             </a> 
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">  
-                <li><a href="#">Profile</a></li> 
-                <li><a href="logout.php" class="btn btn-danger">Logout</a></li> 
+                <li><a class="dropdown-item" href="#">Profile</a></li> 
+                <li><a class="dropdown-item" href="logout.php">Sign out</a></li> 
             </ul> 
             </div> 
         </div>
