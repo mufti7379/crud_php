@@ -17,6 +17,24 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
+
+if(isset($_POST['submit'])) {
+    $nama_kategori = trim($_POST['nama_kategori']);
+    $deskripsi = $_POST['deskripsi'];
+    $all = "SELECT * FROM kategori WHERE nama_kategori='$nama_kategori'";
+    $result = $conn->query($all);
+
+    if($result->num_rows == 0){
+        $query = "INSERT INTO kategori (nama_kategori, deskripsi) values ('$nama_kategori', '$deskripsi')";
+        if($conn->query($query)){
+            echo '<script>alert("Kategori berhasil ditambahkan");window.location="kategori.php";</script>';
+        }else{
+            echo '<script>alert("Gagal menambahkan kategori");window.location="input_kategori.php";</script>';
+        }
+    }else{
+        echo '<script>alert("Kategori sudah ada");window.location="input_kategori.php";</script>';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +42,7 @@ $user = $_SESSION['pengguna'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Admin Berita BSIP</title>
+    <title>Input Kategori Berita BSIP</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -52,18 +70,12 @@ $user = $_SESSION['pengguna'];
             background: #f8f9fa;
         }
 
-        .container {
-            background: rgb(223, 194, 194);
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
-        }
-
         .sidebar .nav-link.active,
         .sidebar .nav-link.active:hover {
             background-color: #0d6efd;
             color: #fff;
         }
+
 
         @media (min-width: 992px) {
             .sidebar {
@@ -123,38 +135,40 @@ $user = $_SESSION['pengguna'];
         </div> 
     </aside>
     <main class="content p-4">
-        <h2 class="text-center mt-5">Pengaturan Kategori Berita BSIP</h2>
-        <div class="container">
-            <div class="button-input">
-                <a href="input_kategori.php" class="btn btn-primary mt-2">+ Tambah Kategori</a>
+        <h2 class="text-center mt-5">Input Berita BSIP</h2>
+        <form class="w-50 mx-auto mt-4" method="post" action="input_berita.php">
+            <div class="mb-3">
+                <label for="namaKategori" class="form-label">Nama Berita</label>
+                <input type="text" class="form-control" id="namaKategori" name="nama_berita" placeholder="Masukkan nama berita">
             </div>
-            <table class="table table-bordered mt-4 w-200 mx-auto">
-            <tr>
-                <td>No.</td>
-                <td>Nama Kategori</td>
-                <td>Deskripsi Kategori</td>
-                <td>Aksi</td>
-            </tr>
-            <?php 
-            $no = 1;
-            $query = "SELECT * FROM kategori";
-            $result = $conn->query($query);
-            while($row = $result->fetch_assoc()){
-            ?>
-            <tr>
-                <td class="p-3"><?php echo $no++; ?></td>
-                <td class="p-3"><?php echo $row['nama_kategori']; ?></td>
-                <td class="p-3"><?php echo $row['deskripsi']; ?></td>
-                <td class="p-3">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            <?php }?>
-            </table>
-        </div>
+            <div class="mb-3">
+                <label for="deskripsiKategori" class="form-label">Isi Berita</label>
+                <textarea class="form-control" id="deskripsiKategori" name="isi_berita" rows="15" placeholder="Masukkan isi berita"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Pilih Kategori Berita</label>
+                <select class="form-control" id="kategoriBerita" name="kategori_berita">
+                    <option value="">Pilih Kategori</option>
+                    <?php
+                    $query = "SELECT * FROM kategori";
+                    $result = $conn->query($query);
+                    while($row = $result->fetch_assoc()){
+                        echo "<option value='".$row['id_kategori']."'>".$row['nama_kategori']."</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Upload Foto (JPG/PNG)</label>
+                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita">
+            </div>
+            
+            <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
+        </form>
     </main>
     </div>
+    
+
     <!-- Sidebar mobile -->
     <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="sidebarMobile">
         <div class="offcanvas-header">

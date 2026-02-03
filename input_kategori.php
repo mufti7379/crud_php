@@ -1,5 +1,6 @@
 <?php
 include 'config_session.php';
+include 'koneksi.php';
 
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -16,6 +17,24 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
+
+if(isset($_POST['submit'])) {
+    $nama_kategori = trim($_POST['nama_kategori']);
+    $deskripsi = $_POST['deskripsi'];
+    $all = "SELECT * FROM kategori WHERE nama_kategori='$nama_kategori'";
+    $result = $conn->query($all);
+
+    if($result->num_rows == 0){
+        $query = "INSERT INTO kategori (nama_kategori, deskripsi) values ('$nama_kategori', '$deskripsi')";
+        if($conn->query($query)){
+            echo '<script>alert("Kategori berhasil ditambahkan");window.location="kategori.php";</script>';
+        }else{
+            echo '<script>alert("Gagal menambahkan kategori");window.location="input_kategori.php";</script>';
+        }
+    }else{
+        echo '<script>alert("Kategori sudah ada");window.location="input_kategori.php";</script>';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +42,7 @@ $user = $_SESSION['pengguna'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Admin Berita BSIP</title>
+    <title>Input Kategori Berita BSIP</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -116,16 +135,16 @@ $user = $_SESSION['pengguna'];
     </aside>
     <main class="content p-4">
         <h2 class="text-center mt-5">Input Kategori Berita BSIP</h2>
-        <form class="w-50 mx-auto mt-4">
+        <form class="w-50 mx-auto mt-4" method="post" action="input_kategori.php">
             <div class="mb-3">
                 <label for="namaKategori" class="form-label">Nama Kategori</label>
-                <input type="text" class="form-control" id="namaKategori" placeholder="Masukkan nama kategori">
+                <input type="text" class="form-control" id="namaKategori" name="nama_kategori" placeholder="Masukkan nama kategori">
             </div>
             <div class="mb-3">
                 <label for="deskripsiKategori" class="form-label">Deskripsi Kategori</label>
-                <textarea class="form-control" id="deskripsiKategori" rows="3" placeholder="Masukkan deskripsi kategori"></textarea>
+                <textarea class="form-control" id="deskripsiKategori" name="deskripsi" rows="3" placeholder="Masukkan deskripsi kategori"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
         </form>
     </main>
     </div>
