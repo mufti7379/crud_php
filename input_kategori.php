@@ -28,13 +28,13 @@ if(isset($_POST['submit'])) {
 
     if($result->num_rows == 0){
         $query = "INSERT INTO kategori (nama_kategori, deskripsi) values ('$nama_kategori', '$deskripsi')";
-        if($conn->query($query)){
+        if(empty($nama_kategori) || empty($deskripsi)){
+            echo '<script>alert("Gagal Menambahkan Kategori");window.location="kategori.php";</script>';
+        }else if($conn->query($query)){
             echo '<script>alert("Kategori berhasil ditambahkan");window.location="kategori.php";</script>';
-        }else{
-            echo '<script>alert("Gagal menambahkan kategori");window.location="input_kategori.php";</script>';
         }
     }else{
-        echo '<script>alert("Kategori sudah ada");window.location="input_kategori.php";</script>';
+        echo '<script>alert("Kategori sudah ada atau Kolom Belum Terisi");window.location="input_kategori.php";</script>';
     }
 }
 ?>

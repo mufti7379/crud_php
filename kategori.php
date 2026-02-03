@@ -71,9 +71,21 @@ $user = $_SESSION['pengguna'];
             .sidebar {
                 display: none;
             }
+        }
 
+        @media (max-width: 768px){
             .content {
-                width: 75% !important;
+                width: 75%;
+            }
+        }
+
+        @media (max-width: 400px){
+            .text-center {
+                font-size: 25px;
+            }
+            .content {
+                width: 50%;
+                font-size: 11px;
             }
         }
     </style>

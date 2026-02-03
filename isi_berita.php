@@ -61,6 +61,15 @@ $user = $_SESSION['pengguna'];
             box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
         }
 
+        .table-scale {
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .table-isi {
+            padding: 3px;
+        }
+
         .sidebar .nav-link.active,
         .sidebar .nav-link.active:hover {
             background-color: #0d6efd;
@@ -75,8 +84,21 @@ $user = $_SESSION['pengguna'];
 
         @media (max-width: 768px){
             .content {
-                width: 3/4;
-                font-size: 15px;
+                width: 5%;
+            }
+        }
+
+        @media (max-width: 400px){
+            .text-center {
+                font-size: 11px;
+            }
+            .content {
+                width: 5%;
+                font-size: 11px;
+            }
+            .btn {
+                font-size: 11px;
+                height: 50px;
             }
         }
     </style>
@@ -132,9 +154,8 @@ $user = $_SESSION['pengguna'];
         </div> 
     </aside>
     <main class="content p-4">
-        <h1 class="text-center m-2">Pengaturan Isi Berita BSIP</h1>
-        <h2 class="text-center mt-2">Selamat Datang <?php echo htmlspecialchars($nama); ?></h2>
-        <div class="input-group mx-auto w-100">
+        <h2 class="text-center mt-2">Pengaturan Isi Berita BSIP</h2>
+        <div class="input-group mx-auto w-75">
             <input type="text" class="form-control" placeholder="Search..." aria-label="Search input" aria-describedby="button-addon2">
             <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
         </div>
@@ -142,55 +163,33 @@ $user = $_SESSION['pengguna'];
             <div class="button-input">
                 <a href="input_berita.php" class="btn btn-primary mt-2">+ Tambah Berita</a>
             </div>
-            <table class="table table-bordered mt-4 w-200 mx-auto">
+            <table class="table table-bordered table-scale">
             <tr>
-                <td class="p-3">No</td>
-                <td class="p-3">Nama Berita</td>
-                <td class="p-3">Deskripsi Berita</td>
-                <td class="p-3">Foto Kegiatan</td>
-                <td class="p-3">Tanggal Publish</td>
-                <td class="p-3">Aksi</td>
+                <td class="table-isi">No</td>
+                <td class="table-isi">Nama Berita</td>
+                <td class="table-isi">Deskripsi Berita</td>
+                <td class="table-isi">Foto Kegiatan</td>
+                <td class="table-isi">Tanggal Publish</td>
+                <td class="table-isi">Aksi</td>
             </tr>
             <tr>
-                <td class="p-3">1</td>
-                <td class="p-3">Berita 1</td>
-                <td class="p-3">Deskripsi singkat berita 1</td>
-                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="p-3">12-05-2024</td>
-                <td class="p-3">
+                <td class="table-isi">1</td>
+                <td class="table-isi">Berita 1</td>
+                <td class="table-isi">Deskripsi singkat berita 1</td>
+                <td class="table-isi"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
+                <td class="table-isi">12-05-2024</td>
+                <td class="table-isi">
                     <button class="btn btn-sm btn-primary">Edit</button>
                     <button class="btn btn-sm btn-danger">Hapus</button>
                 </td>
             </tr>
             <tr>
-                <td class="p-3">1</td>
-                <td class="p-3">Berita 1</td>
-                <td class="p-3">Deskripsi singkat berita 1</td>
-                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="p-3">12-05-2024</td>
-                <td class="p-3">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="p-3">1</td>
-                <td class="p-3">Berita 1</td>
-                <td class="p-3">Deskripsi singkat berita 1</td>
-                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="p-3">12-05-2024</td>
-                <td class="p-3">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="p-3">1</td>
-                <td class="p-3">Berita 1</td>
-                <td class="p-3">Deskripsi singkat berita 1</td>
-                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="p-3">12-05-2024</td>
-                <td class="p-3">
+                <td class="table-isi">1</td>
+                <td class="table-isi">Berita 1</td>
+                <td class="table-isi">Deskripsi singkat berita 1</td>
+                <td class="table-isi"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
+                <td class="table-isi">12-05-2024</td>
+                <td class="table-isi">
                     <button class="btn btn-sm btn-primary">Edit</button>
                     <button class="btn btn-sm btn-danger">Hapus</button>
                 </td>

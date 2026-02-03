@@ -142,7 +142,7 @@ $user = $_SESSION['pengguna'];
             </ul> 
         </div> 
     </aside>
-    <main class="content">
+    <main class="content p-3">
         <h2 class="text-center mt-5">Input Berita BSIP</h2>
         <form class="w-50 mx-auto mt-4" method="post" action="input_berita.php">
             <div class="mb-3">

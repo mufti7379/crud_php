@@ -48,7 +48,7 @@ $user = $_SESSION['pengguna'];
         }
 
 
-        .chart-container {
+        .content {
             flex-grow: 1;
             background: #f8f9fa;
             width: 100%;
@@ -127,8 +127,9 @@ $user = $_SESSION['pengguna'];
             </ul> 
         </div> 
     </aside>
-    <main class="chart-content p-4">
-    <canvas id="myChart" width="606" height="303" style="display: block; box-sizing: border-box; height: 303px; width: 606px;"></canvas>
+    <main class="content p-3">
+        <h2 class="text-center mt-2">Selamat Datang <?php echo htmlspecialchars($nama); ?></h2>
+        <canvas id="myChart" width="606" height="303" style="display: block; box-sizing: border-box; height: 303px; width: 606px;"></canvas>
     </main>
     </div>
     
