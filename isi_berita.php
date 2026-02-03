@@ -1,6 +1,8 @@
 <?php
 include 'config_session.php';
 
+$nama = $_SESSION['pengguna']['nama'];
+
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
     header("Pragma: no-cache");
@@ -22,7 +24,7 @@ $user = $_SESSION['pengguna'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Admin Berita BSIP</title>
+    <title>Dashboard Admin Berita BSIP</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -31,7 +33,8 @@ $user = $_SESSION['pengguna'];
         html, body {
             height: 100%;
         }
-         .dashboard-content {
+
+        .dashboard-content {
             display: flex;
             min-height: 100vh;
         }
@@ -46,18 +49,16 @@ $user = $_SESSION['pengguna'];
         }
 
         .content {
-            
-        }
-
-        .chart-container {
             flex-grow: 1;
             background: #f8f9fa;
-            width: 100%;
-            max-width: 1500px;
-            background: white;
+        }
+
+        .container {
+            background: rgb(223, 194, 194);
+            margin-top: 50px;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
         }
 
         .sidebar .nav-link.active,
@@ -69,6 +70,13 @@ $user = $_SESSION['pengguna'];
         @media (min-width: 992px) {
             .sidebar {
                 display: none;
+            }
+        }
+
+        @media (max-width: 768px){
+            .content {
+                width: 3/4;
+                font-size: 15px;
             }
         }
     </style>
@@ -83,21 +91,21 @@ $user = $_SESSION['pengguna'];
         </div>
     </nav>
 
-    <!-- sidebar dekstop -->
     <div class="dashboard-content">
-    <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
+    <!-- sidebar dekstop -->
+     <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"> 
         <svg class="bi pe-none me-2" width="40" height="32" aria-hidden="true"><use xlink:href="#bootstrap"></use></svg> <span class="fs-4">Berita BSIP</span> 
         </a> 
         <hr> 
         <ul class="nav nav-pills flex-column mb-auto"> 
             <li class="nav-item"> 
-                <a href="home.php" class="nav-link active" aria-current="page"> 
-                <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>Home</a> 
+                <a href="dashboard.php" class="nav-link text-white"> 
+                <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>Dashboard</a> 
             </li> 
             <li> 
-                <a href="dashboard.php"  class="nav-link text-white"> 
-                <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Dashboard Berita
+                <a href="isi_berita.php"  class="nav-link active" aria-current="page"> 
+                <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Isi Berita
                 </a> 
             </li> 
                 <a href="kategori.php" class="nav-link text-white"> 
@@ -123,8 +131,72 @@ $user = $_SESSION['pengguna'];
             </ul> 
         </div> 
     </aside>
-    <main class="chart-content p-4">
-    <canvas id="myChart" width="606" height="303" style="display: block; box-sizing: border-box; height: 303px; width: 606px;"></canvas>
+    <main class="content p-4">
+        <h1 class="text-center m-2">Pengaturan Isi Berita BSIP</h1>
+        <h2 class="text-center mt-2">Selamat Datang <?php echo htmlspecialchars($nama); ?></h2>
+        <div class="input-group mx-auto w-100">
+            <input type="text" class="form-control" placeholder="Search..." aria-label="Search input" aria-describedby="button-addon2">
+            <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
+        </div>
+        <div class="container">
+            <div class="button-input">
+                <a href="input_berita.php" class="btn btn-primary mt-2">+ Tambah Berita</a>
+            </div>
+            <table class="table table-bordered mt-4 w-200 mx-auto">
+            <tr>
+                <td class="p-3">No</td>
+                <td class="p-3">Nama Berita</td>
+                <td class="p-3">Deskripsi Berita</td>
+                <td class="p-3">Foto Kegiatan</td>
+                <td class="p-3">Tanggal Publish</td>
+                <td class="p-3">Aksi</td>
+            </tr>
+            <tr>
+                <td class="p-3">1</td>
+                <td class="p-3">Berita 1</td>
+                <td class="p-3">Deskripsi singkat berita 1</td>
+                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
+                <td class="p-3">12-05-2024</td>
+                <td class="p-3">
+                    <button class="btn btn-sm btn-primary">Edit</button>
+                    <button class="btn btn-sm btn-danger">Hapus</button>
+                </td>
+            </tr>
+            <tr>
+                <td class="p-3">1</td>
+                <td class="p-3">Berita 1</td>
+                <td class="p-3">Deskripsi singkat berita 1</td>
+                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
+                <td class="p-3">12-05-2024</td>
+                <td class="p-3">
+                    <button class="btn btn-sm btn-primary">Edit</button>
+                    <button class="btn btn-sm btn-danger">Hapus</button>
+                </td>
+            </tr>
+            <tr>
+                <td class="p-3">1</td>
+                <td class="p-3">Berita 1</td>
+                <td class="p-3">Deskripsi singkat berita 1</td>
+                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
+                <td class="p-3">12-05-2024</td>
+                <td class="p-3">
+                    <button class="btn btn-sm btn-primary">Edit</button>
+                    <button class="btn btn-sm btn-danger">Hapus</button>
+                </td>
+            </tr>
+            <tr>
+                <td class="p-3">1</td>
+                <td class="p-3">Berita 1</td>
+                <td class="p-3">Deskripsi singkat berita 1</td>
+                <td class="p-3"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
+                <td class="p-3">12-05-2024</td>
+                <td class="p-3">
+                    <button class="btn btn-sm btn-primary">Edit</button>
+                    <button class="btn btn-sm btn-danger">Hapus</button>
+                </td>
+            </tr>
+            </table>
+        </div>
     </main>
     </div>
     
@@ -138,10 +210,10 @@ $user = $_SESSION['pengguna'];
         <div class="offcanvas-body">
             <ul class="nav nav-pills flex-column mb-3">
                 <li class="nav-item">
-                    <a class="nav-link active" href="home.php">Home</a>
+                    <a class="nav-link text-white" href="dashboard.php">Dashboard</a>
                 </li>
                 <li>
-                    <a class="nav-link text-white" href="dashboard.php">Dashboard Berita</a>
+                    <a class="nav-link active" href="isi_berita.php">Isi Berita</a>
                 </li>
                 <li>
                     <a class="nav-link text-white" href="kategori.php">Kategori</a>
@@ -150,7 +222,6 @@ $user = $_SESSION['pengguna'];
                     <a class="nav-link text-white" href="#">User</a>
                 </li>
             </ul>
-        
         <!-- admin profile mobile -->
         <div class="d-flex align-items-center gap-2">
             <img src="https://github.com/mdo.png" alt="" width="36" height="36" class="rounded-circle me-2"> 

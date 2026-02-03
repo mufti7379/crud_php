@@ -69,6 +69,10 @@ $user = $_SESSION['pengguna'];
             .sidebar {
                 display: none;
             }
+
+            .content {
+                width: 75%;
+            }
         }
     </style>
 </head>
@@ -91,12 +95,12 @@ $user = $_SESSION['pengguna'];
         <hr> 
         <ul class="nav nav-pills flex-column mb-auto"> 
             <li class="nav-item"> 
-                <a href="home.php" class="nav-link text-white" > 
-                <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>Home</a> 
+                <a href="dashboard.php" class="nav-link text-white" > 
+                <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>Dashboard</a> 
             </li> 
             <li> 
-                <a href="dashboard.php"  class="nav-link text-white"> 
-                <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Dashboard Berita
+                <a href="isi_berita.php"  class="nav-link text-white"> 
+                <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Isi Berita
                 </a> 
             </li> 
                 <a href="kategori.php" class="nav-link active" aria-current="page"> 
@@ -164,10 +168,10 @@ $user = $_SESSION['pengguna'];
         <div class="offcanvas-body">
             <ul class="nav nav-pills flex-column mb-3">
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="home.php">Home</a>
+                    <a class="nav-link text-white" href="dashboard.php">Dashboard</a>
                 </li>
                 <li>
-                    <a class="nav-link text-white" href="dashboard.php">Dashboard Berita</a>
+                    <a class="nav-link text-white" href="isi_berita.php">Isi Berita</a>
                 </li>
                 <li>
                     <a class="nav-link active" href="kategori.php">Kategori</a>

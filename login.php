@@ -3,7 +3,7 @@ include 'config_session.php';
 include 'koneksi.php';
 
 if(isLoggedIn()) {
-    header("Location: home.php");
+    header("Location: isi_berita.php");
     exit();
 }
 
@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])){
             
             $_SESSION['last_activity'] = time();
             $_SESSION['login_time'] = time();
-            header("Location: home.php");
+            header("Location: isi_berita.php");
             exit();
         } else {
             echo "<script>alert('Password salah');window.location='login.php';</script>";
