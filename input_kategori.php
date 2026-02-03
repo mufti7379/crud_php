@@ -53,7 +53,7 @@ if(isset($_POST['submit'])) {
         html, body {
             height: 100%;
         }
-         .dashboard-content {
+        .dashboard-content {
             display: flex;
             min-height: 100vh;
         }
