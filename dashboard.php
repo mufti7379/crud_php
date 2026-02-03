@@ -1,6 +1,8 @@
 <?php
 include 'config_session.php';
 
+$nama = $_SESSION['pengguna']['nama'];
+
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
     header("Pragma: no-cache");
@@ -67,7 +69,7 @@ $user = $_SESSION['pengguna'];
             .sidebar {
                 display: none;
             }
-            
+
             main {
                 width: 75%;
             }
@@ -117,7 +119,7 @@ $user = $_SESSION['pengguna'];
         <div class="dropdown"> 
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> 
             <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2"> 
-            <strong>Admin</strong> 
+            <strong><?php echo htmlspecialchars($nama)?></strong> 
             </a> 
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">  
                 <li><a class="dropdown-item" href="#">Profile</a></li> 
@@ -158,7 +160,7 @@ $user = $_SESSION['pengguna'];
             <img src="https://github.com/mdo.png" alt="" width="36" height="36" class="rounded-circle me-2"> 
             <div class="dropdown p-10"> 
             <a href="#" class="align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> 
-            <strong>Admin</strong> 
+            <strong><?php echo htmlspecialchars($nama)?></strong> 
             </a> 
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">  
                 <li><a class="dropdown-item" href="#">Profile</a></li> 
