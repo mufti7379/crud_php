@@ -7,21 +7,26 @@ if(isLoggedIn()) {
     exit();
 }
 
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])){
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $query = "SELECT * FROM pengguna WHERE email='$email'";
-    $result = $conn->query($query);
+$email = $_POST['email'] ?? null;
+$password = $_POST['password'] ?? null;
 
+$query = "SELECT * FROM pengguna WHERE email=?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s",$email);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])){
     if($result->num_rows > 0){
-        $row = mysqli_fetch_assoc($result);
-        if(password_verify($password, $row['password'])){
+        if(password_verify($password, $user['password'])){
             session_regenerate_id(true);
             $_SESSION['pengguna'] = [
-                'id' => $row['id_user'],
-                'nama' => $row['nama'],
-                'email' => $row['email'],
-                'role' => $row['role']
+                'id' => $user['id_user'],
+                'nama' => $user['nama'],
+                'email' => $user['email'],
+                'role' => $user['role']
             ];
             
             $_SESSION['last_activity'] = time();

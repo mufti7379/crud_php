@@ -1,5 +1,6 @@
 <?php
 include 'config_session.php';
+include 'koneksi.php';
 
 $nama = $_SESSION['pengguna']['nama'];
 
@@ -18,13 +19,48 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
+
+if(isset($_GET['id_kategori'])){
+    $id_kategori = $_GET['id_kategori'];
+}else{
+    die ("Error, no Id selected! ");
+}
+
+$query =  "SELECT id_kategori, nama_kategori, deskripsi FROM kategori WHERE id_kategori='$id_kategori'";
+$sql = $conn->query($query);
+$hasil = $sql->fetch_assoc($hasil);
+
+$id_kategori = $hasil['id_kategori'];
+$nama_kategori = $hasil['nama_kategori'];
+$deskripsi_kategori = $hasil['deskripsi'];
+
+
+
+if(isset($_POST['edit'])) {
+    $nama_kategori = trim($_POST['nama_kategori']);
+    $deskripsi = $_POST['deskripsi'];
+    $all = "SELECT * FROM kategori WHERE nama_kategori='$nama_kategori'";
+    $result = $conn->query($all);
+
+    if($result->num_rows == 0){
+        $query = "INSERT INTO kategori (nama_kategori, deskripsi) values ('$nama_kategori', '$deskripsi')";
+        if(empty($nama_kategori) || empty($deskripsi)){
+            echo '<script>alert("Gagal Menambahkan Kategori");window.location="kategori.php";</script>';
+        }else if($conn->query($query)){
+            echo '<script>alert("Kategori berhasil ditambahkan");window.location="kategori.php";</script>';
+        }
+    }else{
+        echo '<script>alert("Kategori sudah ada atau Kolom Belum Terisi");window.location="input_kategori.php";</script>';
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin Berita BSIP</title>
+    <title>Halaman Edit Kategori Berita BSIP</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -33,7 +69,6 @@ $user = $_SESSION['pengguna'];
         html, body {
             height: 100%;
         }
-
         .dashboard-content {
             display: flex;
             min-height: 100vh;
@@ -53,23 +88,6 @@ $user = $_SESSION['pengguna'];
             background: #f8f9fa;
         }
 
-        .container {
-            background: rgb(223, 194, 194);
-            margin-top: 50px;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
-        }
-
-        .table-scale {
-            width: 100%;
-            margin-top: 4px;
-        }
-
-        .table-isi {
-            padding: 3px;
-        }
-
         .sidebar .nav-link.active,
         .sidebar .nav-link.active:hover {
             background-color: #0d6efd;
@@ -80,30 +98,10 @@ $user = $_SESSION['pengguna'];
             .sidebar {
                 display: none;
             }
-        }
 
-        @media (max-width: 768px){
-            .content {
-                width: 5%;
+            main {
+                width: 75%;
             }
-        }
-
-        @media (max-width: 470px){
-            .text-center {
-                font-size: 11px;
-            }
-            .content {
-                width: 5%;
-                font-size: 11px;
-            }
-            .btn {
-                font-size: 11px;
-                height: 50px;
-            }
-        }
-
-        @media (max-width:420px){
-            
         }
     </style>
 </head>
@@ -117,24 +115,24 @@ $user = $_SESSION['pengguna'];
         </div>
     </nav>
 
-    <div class="dashboard-content">
     <!-- sidebar dekstop -->
-     <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
+    <div class="dashboard-content">
+    <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"> 
         <svg class="bi pe-none me-2" width="40" height="32" aria-hidden="true"><use xlink:href="#bootstrap"></use></svg> <span class="fs-4">Berita BSIP</span> 
         </a> 
         <hr> 
         <ul class="nav nav-pills flex-column mb-auto"> 
             <li class="nav-item"> 
-                <a href="dashboard.php" class="nav-link text-white"> 
+                <a href="dashboard.php" class="nav-link text-white" > 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>Dashboard</a> 
             </li> 
             <li> 
-                <a href="isi_berita.php"  class="nav-link active" aria-current="page"> 
+                <a href="isi_berita.php"  class="nav-link text-white"> 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Isi Berita
                 </a> 
             </li> 
-                <a href="kategori.php" class="nav-link text-white"> 
+                <a href="kategori.php" class="nav-link active" aria-current="page"> 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Kategori
                 </a> 
             </li> 
@@ -157,49 +155,19 @@ $user = $_SESSION['pengguna'];
             </ul> 
         </div> 
     </aside>
-    <main class="content p-4">
-        <h2 class="text-center mt-2">Pengaturan Isi Berita BSIP</h2>
-        <div class="input-group mx-auto w-75">
-            <input type="text" class="form-control" placeholder="Search..." aria-label="Search input" aria-describedby="button-addon2">
-            <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
-        </div>
-        <div class="container">
-            <div class="button-input">
-                <a href="input_berita.php" class="btn btn-primary mt-2">+ Tambah Berita</a>
+    <main class="content">
+        <h2 class="text-center mt-5">Halaman Edit Kategori Berita BSIP</h2>
+        <form class="w-75 mx-auto mt-4" method="post" action="input_kategori.php">
+            <div class="mb-3">
+                <label for="namaKategori" class="form-label">Nama Kategori</label>
+                <input type="text" class="form-control" id="namaKategori" name="nama_kategori" placeholder="Masukkan nama kategori">
             </div>
-            <table class="table table-bordered table-scale">
-            <tr>
-                <td class="table-isi">No</td>
-                <td class="table-isi">Nama Berita</td>
-                <td class="table-isi">Deskripsi Berita</td>
-                <td class="table-isi">Foto Kegiatan</td>
-                <td class="table-isi">Tanggal Publish</td>
-                <td class="table-isi">Aksi</td>
-            </tr>
-            <tr>
-                <td class="table-isi">1</td>
-                <td class="table-isi">Berita 1</td>
-                <td class="table-isi">Deskripsi singkat berita 1</td>
-                <td class="table-isi"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="table-isi">12-05-2024</td>
-                <td class="table-isi">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="table-isi">1</td>
-                <td class="table-isi">Berita 1</td>
-                <td class="table-isi">Deskripsi singkat berita 1</td>
-                <td class="table-isi"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="table-isi">12-05-2024</td>
-                <td class="table-isi">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
-            </table>
-        </div>
+            <div class="mb-3">
+                <label for="deskripsiKategori" class="form-label">Deskripsi Kategori</label>
+                <textarea class="form-control" id="deskripsiKategori" name="deskripsi" rows="3" placeholder="Masukkan deskripsi kategori"></textarea>
+            </div>
+            <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
+        </form>
     </main>
     </div>
     
@@ -216,15 +184,16 @@ $user = $_SESSION['pengguna'];
                     <a class="nav-link text-white" href="dashboard.php">Dashboard</a>
                 </li>
                 <li>
-                    <a class="nav-link active" href="isi_berita.php">Isi Berita</a>
+                    <a class="nav-link text-white" href="isi_berita.php">Isi Berita</a>
                 </li>
                 <li>
-                    <a class="nav-link text-white" href="kategori.php">Kategori</a>
+                    <a class="nav-link active" href="kategori.php">Kategori</a>
                 </li>
                 <li>
                     <a class="nav-link text-white" href="#">User</a>
                 </li>
             </ul>
+        
         <!-- admin profile mobile -->
         <div class="d-flex align-items-center gap-2">
             <img src="https://github.com/mdo.png" alt="" width="36" height="36" class="rounded-circle me-2"> 
@@ -233,8 +202,8 @@ $user = $_SESSION['pengguna'];
             <strong><?php echo htmlspecialchars($nama)?></strong> 
             </a> 
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">  
-                <li><a class="dropdown-item" href="#">Profile</a></li> 
-                <li><a class="dropdown-item" href="logout.php">Sign out</a></li> 
+                <li><a href="#">Profile</a></li> 
+                <li><a href="logout.php" class="btn btn-danger">Logout</a></li> 
             </ul> 
             </div> 
         </div>

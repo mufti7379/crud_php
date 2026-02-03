@@ -19,13 +19,16 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
+$nama_kategori = $_POST['nama_kategori'] ?? null;
+$deskripsi = $_POST['deskripsi'] ?? null;
+
+$query = "SELECT * FROM kategori WHERE nama_kategori=?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s",$nama_kategori);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if(isset($_POST['submit'])) {
-    $nama_kategori = trim($_POST['nama_kategori']);
-    $deskripsi = $_POST['deskripsi'];
-    $all = "SELECT * FROM kategori WHERE nama_kategori='$nama_kategori'";
-    $result = $conn->query($all);
-
     if($result->num_rows == 0){
         $query = "INSERT INTO kategori (nama_kategori, deskripsi) values ('$nama_kategori', '$deskripsi')";
         if(empty($nama_kategori) || empty($deskripsi)){
