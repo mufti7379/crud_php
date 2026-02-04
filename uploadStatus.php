@@ -1,5 +1,5 @@
 <?php
-enum uploadStatus: string {
+enum UploadStatus: string {
     case draft = 'draft';
     case publish = 'publish';
 }

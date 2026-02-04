@@ -1,8 +1,17 @@
 <?php
 include 'config_session.php';
+// include 'uploadStatus.php';
 include 'koneksi.php';
 
+$user = $_SESSION['pengguna'];
 $nama = $_SESSION['pengguna']['nama'];
+$id_user = $_SESSION['pengguna']['id'];
+
+$judul = $_POST['nama_berita'] ?? null;
+$isi = $_POST['isi_berita'] ?? null;
+$foto = $_POST['foto'] ?? null;
+$id_kategori = $_POST['kategori_berita'] ?? null;
+$uploadStatus = $_POST['status'] ?? 'draft';
 
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -18,32 +27,63 @@ header("Cache-Control: no-cache, no-store, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
-$user = $_SESSION['pengguna'];
 
-$judul = $_POST['judul'] ?? null;
-$isi = $_POST['isi'] ?? null;
-$foto = $_POST['foto'] ?? null;
-$uploadStatus = $_POST['status'];
-
-$status = uploadStatus::tryFrom($uploadStatus);
+// $status = UploadStatus::tryFrom($uploadStatus);
 $all = "SELECT * FROM berita WHERE judul=?";
 $stmt = $conn->prepare($all);
 $stmt->bind_param("s",$judul);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$nama_file = $_FILES['foto']['name'];
-$tmp_file = $_FILES['foto']['tmp_name'];
-$ukuran = $_FILES['foto']['size'];
-$error = $_FILES['foto']['error'];
+if(isset($_POST['Submit']) && !empty($_FILES['gambar_berita']['name'])) {
+    if(!$judul || !$isi || !$id_kategori){
+        die("Data tidak lengkap");
+        exit();
+    }
+    
+    if(empty($_FILES['gambar_berita']['name'])){
+        die("Foto Wajib Diupload");
+        exit();
+    }
 
-$ekstensi_valid = ['jpg','png','jpeg'];
-$ekstensi = strtolower(pathinfo($nama_file, PATHINFO_EXTENSION));
+    $file   = $_FILES['gambar_berita'];
+    $ukuran = $file['size'];
+    $error  = $file['error'];
+    $tmp_file = $file['tmp_name'];
+    $ekstensi_valid = ['jpg','jpeg','png','webp'];
+    $ekstensi = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-if(isset($_POST['Submit']) && isset($_FILES['foto'])) {
+    if(!in_array($ekstensi, $ekstensi_valid)){
+        die("Format file tidak diizinkan");
+        exit();
+    }
+
+    if($ukuran > 2 * 1024 * 1024){
+        die("Ukuran foto maksimal 2MB");
+        exit();
+    }
+
+    if($error != 0){
+        die("Upload Gagal");
+        exit();
+    }
+
+    $nama_foto = uniqid('berita_'). '.' . $ekstensi;
+
+    $folder = "../images/berita/";
+    if(!is_dir($folder)){
+        mkdir($folder, 0777, true);
+    }
+
+    move_uploaded_file($tmp_file, $folder . $nama_foto);
+
     if($result->num_rows == 0){
-        $query = "INSERT INTO berita (judul, isi, foto, ) values ('$judul', '$isi','$foto')";
-        if($conn->query($query)){
+        $insert = "INSERT INTO berita (judul, isi, id_user, id_kategori, foto, status) values (?,?,?,?,?,?)";
+        $kirim = $conn->prepare($insert);
+        $kirim->bind_param("ssiiss",$judul,$isi,$id_user,$id_kategori,$nama_foto, $status);
+        $kirim->execute();
+
+        if($kirim->affected_rows > 0){
             echo '<script>alert("Berita berhasil ditambahkan");window.location="kategori.php";</script>';
         }else{
             echo '<script>alert("Gagal menambahkan berita");window.location="input_kategori.php";</script>';
@@ -161,11 +201,18 @@ $user = $_SESSION['pengguna'];
         <h2 class="text-center mt-5">Input Berita BSIP</h2>
         <form class="w-50 mx-auto mt-4" method="post" action="input_berita.php" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="namaKategori" class="form-label">Nama Berita</label>
+                <label for="namaBerita" class="form-label">Nama Berita</label>
                 <input type="text" class="form-control" id="namaKategori" name="nama_berita" placeholder="Masukkan nama berita">
             </div>
             <div class="mb-3">
-                <label for="deskripsiKategori" class="form-label">Isi Berita</label>
+                <label for="statusUpload" class="form-label">Status Upload</label>
+                <select name="status">
+                    <option value="draft">draft</option>
+                    <option value="publish">publish</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="isiBerita" class="form-label">Isi Berita</label>
                 <textarea class="form-control" id="deskripsiKategori" name="isi_berita" rows="15" placeholder="Masukkan isi berita"></textarea>
             </div>
             <div class="mb-3">
@@ -183,10 +230,10 @@ $user = $_SESSION['pengguna'];
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Upload Foto (JPG/PNG)</label>
-                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept="images/berita/*">
+                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept="images/berita/*" required>
             </div>
             
-            <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" name="Submit" class="btn btn-primary">Simpan</button>
         </form>
     </main>
     </div>
