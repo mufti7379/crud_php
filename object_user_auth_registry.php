@@ -36,7 +36,7 @@ if(isset($_POST['register'])){
 ?>
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
-  <head>
+    <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Berita BSIP</title>
