@@ -20,38 +20,36 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
 
-if(isset($_GET['id_kategori'])){
-    $id_kategori = $_GET['id_kategori'];
-}else{
-    die ("Error, no Id selected! ");
+if(isset($_POST['Submit'])){
+    $id = $_POST['id'];
+    $nama_baru = $_POST['nama_kategori'];
+    $deskripsi_baru = $_POST['deskripsi'];
+    $update = "UPDATE kategori SET nama_kategori=?, deskripsi=? WHERE id_kategori=?";
+    $kirim = $conn->prepare($update);
+    $kirim->bind_param("ssi", $nama_baru, $deskripsi_baru, $id);
+    $kirim->execute();
+
+    if($kirim->affected_rows > 0){
+        header("Location: kategori.php");
+        exit();
+    }
 }
 
-$query =  "SELECT id_kategori, nama_kategori, deskripsi FROM kategori WHERE id_kategori='$id_kategori'";
-$sql = $conn->query($query);
-$hasil = $sql->fetch_assoc($hasil);
+$id_kategori = $_GET['id_kategori'] ?? $_POST['id'] ?? null;
 
-$id_kategori = $hasil['id_kategori'];
-$nama_kategori = $hasil['nama_kategori'];
-$deskripsi_kategori = $hasil['deskripsi'];
+if($id_kategori){
+    $query =  "SELECT id_kategori, nama_kategori, deskripsi FROM kategori WHERE id_kategori=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i",$id_kategori);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $hasil = $result->fetch_assoc();
 
-
-
-if(isset($_POST['edit'])) {
-    $nama_kategori = trim($_POST['nama_kategori']);
-    $deskripsi = $_POST['deskripsi'];
-    $all = "SELECT * FROM kategori WHERE nama_kategori='$nama_kategori'";
-    $result = $conn->query($all);
-
-    if($result->num_rows == 0){
-        $query = "INSERT INTO kategori (nama_kategori, deskripsi) values ('$nama_kategori', '$deskripsi')";
-        if(empty($nama_kategori) || empty($deskripsi)){
-            echo '<script>alert("Gagal Menambahkan Kategori");window.location="kategori.php";</script>';
-        }else if($conn->query($query)){
-            echo '<script>alert("Kategori berhasil ditambahkan");window.location="kategori.php";</script>';
-        }
-    }else{
-        echo '<script>alert("Kategori sudah ada atau Kolom Belum Terisi");window.location="input_kategori.php";</script>';
+    if(!$hasil){
+        die("Data Kategori Tidak Ditemukan");
     }
+}else{
+    die("ID kategori tidak ditemukan");
 }
 ?>
 
@@ -157,16 +155,17 @@ if(isset($_POST['edit'])) {
     </aside>
     <main class="content">
         <h2 class="text-center mt-5">Halaman Edit Kategori Berita BSIP</h2>
-        <form class="w-75 mx-auto mt-4" method="post" action="input_kategori.php">
+        <form class="w-75 mx-auto mt-4" method="post" action="edit_kategori.php">
+            <input type="hidden" name="id" value="<?php echo $id_kategori ?> ">
             <div class="mb-3">
                 <label for="namaKategori" class="form-label">Nama Kategori</label>
-                <input type="text" class="form-control" id="namaKategori" name="nama_kategori" placeholder="Masukkan nama kategori">
+                <input type="text" class="form-control" id="namaKategori" name="nama_kategori" value="<?php echo $hasil['nama_kategori']?>">
             </div>
             <div class="mb-3">
                 <label for="deskripsiKategori" class="form-label">Deskripsi Kategori</label>
-                <textarea class="form-control" id="deskripsiKategori" name="deskripsi" rows="3" placeholder="Masukkan deskripsi kategori"></textarea>
+                <textarea class="form-control" id="deskripsiKategori" name="deskripsi" rows="3"><?php echo $hasil['deskripsi']?></textarea>
             </div>
-            <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" name="Submit" class="btn btn-primary">Simpan</button>
         </form>
     </main>
     </div>
