@@ -8,7 +8,6 @@ $email = $_POST['email'] ?? null;
 $inputStatus = $_POST['status'] ?? null;
 $password = $_POST['password'] ?? null;
 
-
 $password_encrypt = password_hash($password, PASSWORD_BCRYPT);
 $status = userStatus::tryFrom($inputStatus);
 $validasi_email = "SELECT id_user FROM pengguna WHERE email=?";

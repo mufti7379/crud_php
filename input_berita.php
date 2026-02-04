@@ -22,7 +22,10 @@ $user = $_SESSION['pengguna'];
 
 $judul = $_POST['judul'] ?? null;
 $isi = $_POST['isi'] ?? null;
+$foto = $_POST['foto'] ?? null;
+$uploadStatus = $_POST['status'];
 
+$status = uploadStatus::tryFrom($uploadStatus);
 $all = "SELECT * FROM berita WHERE judul=?";
 $stmt = $conn->prepare($all);
 $stmt->bind_param("s",$judul);
@@ -31,7 +34,7 @@ $result = $stmt->get_result();
 
 if(isset($_POST['Submit'])) {
     if($result->num_rows == 0){
-        $query = "INSERT INTO berita (judul, isi, foto) values ('$judul', '$isi','$foto')";
+        $query = "INSERT INTO berita (judul, isi, foto, ) values ('$judul', '$isi','$foto')";
         if($conn->query($query)){
             echo '<script>alert("Berita berhasil ditambahkan");window.location="kategori.php";</script>';
         }else{
@@ -148,7 +151,7 @@ $user = $_SESSION['pengguna'];
     </aside>
     <main class="content p-3">
         <h2 class="text-center mt-5">Input Berita BSIP</h2>
-        <form class="w-50 mx-auto mt-4" method="post" action="input_berita.php">
+        <form class="w-50 mx-auto mt-4" method="post" action="input_berita.php" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="namaKategori" class="form-label">Nama Berita</label>
                 <input type="text" class="form-control" id="namaKategori" name="nama_berita" placeholder="Masukkan nama berita">
@@ -172,7 +175,7 @@ $user = $_SESSION['pengguna'];
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Upload Foto (JPG/PNG)</label>
-                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita">
+                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept="images/berita/*">
             </div>
             
             <button type="submit" name="submit" class="btn btn-primary">Simpan</button>

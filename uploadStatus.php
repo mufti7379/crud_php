@@ -1,6 +1,6 @@
 <?php
 enum uploadStatus: string {
-    case admin = 'draft';
-    case penulis = 'publish';
+    case draft = 'draft';
+    case publish = 'publish';
 }
 ?>

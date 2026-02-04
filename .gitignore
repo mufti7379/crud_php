@@ -1,4 +1,6 @@
 .env
 .htaccess
 
-database.sql
+database.sq
+
+images/*
