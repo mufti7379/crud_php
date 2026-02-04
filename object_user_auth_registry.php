@@ -2,23 +2,28 @@
 include 'koneksi.php';
 require 'userStatus.php';
 
+
+$name = $_POST['name'] ?? null;
+$email = $_POST['email'] ?? null;
+$inputStatus = $_POST['status'] ?? null;
+$password = $_POST['password'] ?? null;
+
+$password_encrypt = password_hash($password, PASSWORD_BCRYPT);
+$status = userStatus::tryFrom($inputStatus);
+$validasi_email = "SELECT id_user FROM pengguna WHERE email=?";
+$stmt = $conn->prepare($validasi_email);
+$stmt->bind_param('s',$email);
+$stmt->execute();
+$result = $stmt->get_result();
+
 if(isset($_POST['register'])){
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-    $inputStatus = $_POST['status'];
-    $status = userStatus::tryFrom($inputStatus);
-
     if(!$status) {
-        echo "<script>alert('Status pengguna tidak valid');window.location='object_user_auth_registry.php';</script>";
-        exit();
+    echo "<script>alert('Status pengguna tidak valid');window.location='object_user_auth_registry.php';</script>";
+    exit();
     }
-
-    $validasi_email = "SELECT id_user FROM pengguna WHERE email='$email'";
-    $result = $conn->query($validasi_email);
-
+    
     if($result->num_rows == 0){
-        $query = "INSERT INTO pengguna (nama, email, password, role) VALUES ('$name', '$email', '$password','$status->value')";
+        $query = "INSERT INTO pengguna (nama, email, password, role) VALUES ('$name', '$email', '$password_encrypt','$status->value')";
         if($conn->query($query)){
             echo "<script>alert('Registrasi berhasil');window.location='login.php';</script>";
         } else {

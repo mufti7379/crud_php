@@ -20,21 +20,25 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
 
-if(isset($_POST['submit'])) {
-    $nama_kategori = trim($_POST['nama_kategori']);
-    $deskripsi = $_POST['deskripsi'];
-    $all = "SELECT * FROM kategori WHERE nama_kategori='$nama_kategori'";
-    $result = $conn->query($all);
+$judul = $_POST['judul'] ?? null;
+$isi = $_POST['isi'] ?? null;
 
+$all = "SELECT * FROM berita WHERE judul=?";
+$stmt = $conn->prepare($all);
+$stmt->bind_param("s",$judul);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if(isset($_POST['Submit'])) {
     if($result->num_rows == 0){
-        $query = "INSERT INTO kategori (nama_kategori, deskripsi) values ('$nama_kategori', '$deskripsi')";
+        $query = "INSERT INTO berita (judul, isi, foto) values ('$judul', '$isi','$foto')";
         if($conn->query($query)){
-            echo '<script>alert("Kategori berhasil ditambahkan");window.location="kategori.php";</script>';
+            echo '<script>alert("Berita berhasil ditambahkan");window.location="kategori.php";</script>';
         }else{
-            echo '<script>alert("Gagal menambahkan kategori");window.location="input_kategori.php";</script>';
+            echo '<script>alert("Gagal menambahkan berita");window.location="input_kategori.php";</script>';
         }
     }else{
-        echo '<script>alert("Kategori sudah ada");window.location="input_kategori.php";</script>';
+        echo '<script>alert("Berita sudah ada");window.location="input_kategori.php";</script>';
     }
 }
 

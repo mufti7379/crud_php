@@ -28,7 +28,7 @@ $stmt->bind_param("s",$nama_kategori);
 $stmt->execute();
 $result = $stmt->get_result();
 
-if(isset($_POST['submit'])) {
+if(isset($_POST['Submit'])) {
     if($result->num_rows == 0){
         $query = "INSERT INTO kategori (nama_kategori, deskripsi) values ('$nama_kategori', '$deskripsi')";
         if(empty($nama_kategori) || empty($deskripsi)){
@@ -153,7 +153,7 @@ if(isset($_POST['submit'])) {
                 <label for="deskripsiKategori" class="form-label">Deskripsi Kategori</label>
                 <textarea class="form-control" id="deskripsiKategori" name="deskripsi" rows="3" placeholder="Masukkan deskripsi kategori"></textarea>
             </div>
-            <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" name="Submit" class="btn btn-primary">Simpan</button>
         </form>
     </main>
     </div>
