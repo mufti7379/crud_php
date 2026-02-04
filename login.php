@@ -17,7 +17,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])){
     if($result->num_rows > 0){
         if(password_verify($password, $user['password'])){
