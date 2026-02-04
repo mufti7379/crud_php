@@ -165,7 +165,7 @@ $user = $_SESSION['pengguna'];
                 <td class="p-3"><?php echo $row['deskripsi']; ?></td>
                 <td class="p-3">
                     <a href="edit_kategori.php?id_kategori=<?= $row['id_kategori']; ?>" class="btn btn-sm btn-warning" >Edit</a>
-                    <a href="#" class="btn btn-sm btn-danger" >Edit</a>
+                    <a href="#" class="btn btn-sm btn-danger" >Hapus</a>
                 </td>
             </tr>
             <?php }?>

@@ -1,5 +1,6 @@
 <?php
 include 'config_session.php';
+include 'koneksi.php';
 
 $nama = $_SESSION['pengguna']['nama'];
 
@@ -163,42 +164,37 @@ $user = $_SESSION['pengguna'];
             <input type="text" class="form-control" placeholder="Search..." aria-label="Search input" aria-describedby="button-addon2">
             <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
         </div>
-        <div class="container">
+            <div class="container">
             <div class="button-input">
                 <a href="input_berita.php" class="btn btn-primary mt-2">+ Tambah Berita</a>
             </div>
-            <table class="table table-bordered table-scale">
+            <table class="table table-bordered mt-4 w-200 mx-auto">
             <tr>
-                <td class="table-isi">No</td>
-                <td class="table-isi">Nama Berita</td>
-                <td class="table-isi">Deskripsi Berita</td>
-                <td class="table-isi">Foto Kegiatan</td>
-                <td class="table-isi">Tanggal Publish</td>
-                <td class="table-isi">Aksi</td>
+                <td>No.</td>
+                <td>Nama Berita</td>
+                <td>Deskripsi Berita</td>
+                <td>Nama Foto</td>
+                <td>Aksi</td>
             </tr>
+            <?php 
+            $no = 1;
+            $query = "SELECT * FROM berita";
+            $result = $conn->query($query);
+            while($row = $result->fetch_assoc()){
+            ?>
             <tr>
-                <td class="table-isi">1</td>
-                <td class="table-isi">Berita 1</td>
-                <td class="table-isi">Deskripsi singkat berita 1</td>
-                <td class="table-isi"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="table-isi">12-05-2024</td>
-                <td class="table-isi">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
+                <td class="p-3"><?php echo $no++; ?></td>
+                <td class="p-3"><?php echo $row['judul']; ?></td>
+                <td class="p-3"><?php echo $row['isi']; ?></td>
+                <td class="p-3"><?php echo $row['foto']; ?></td>
+                <td class="p-3">
+                    <a href="edit_kategori.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>
+                    <a href="#" class="btn btn-sm btn-danger" >Hapus</a>
                 </td>
             </tr>
-            <tr>
-                <td class="table-isi">1</td>
-                <td class="table-isi">Berita 1</td>
-                <td class="table-isi">Deskripsi singkat berita 1</td>
-                <td class="table-isi"><img src="../images/berita1.jpg" alt="Foto Berita 1" width="100"></td>
-                <td class="table-isi">12-05-2024</td>
-                <td class="table-isi">
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </td>
-            </tr>
+            <?php }?>
             </table>
+            </div>
         </div>
     </main>
     </div>
