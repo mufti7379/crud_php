@@ -32,7 +32,15 @@ $stmt->bind_param("s",$judul);
 $stmt->execute();
 $result = $stmt->get_result();
 
-if(isset($_POST['Submit'])) {
+$nama_file = $_FILES['foto']['name'];
+$tmp_file = $_FILES['foto']['tmp_name'];
+$ukuran = $_FILES['foto']['size'];
+$error = $_FILES['foto']['error'];
+
+$ekstensi_valid = ['jpg','png','jpeg'];
+$ekstensi = strtolower(pathinfo($nama_file, PATHINFO_EXTENSION));
+
+if(isset($_POST['Submit']) && isset($_FILES['foto'])) {
     if($result->num_rows == 0){
         $query = "INSERT INTO berita (judul, isi, foto, ) values ('$judul', '$isi','$foto')";
         if($conn->query($query)){
