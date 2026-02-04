@@ -119,7 +119,7 @@ $user = $_SESSION['pengguna'];
 
     <div class="dashboard-content">
     <!-- sidebar dekstop -->
-     <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
+    <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"> 
         <svg class="bi pe-none me-2" width="40" height="32" aria-hidden="true"><use xlink:href="#bootstrap"></use></svg> <span class="fs-4">Berita BSIP</span> 
         </a> 

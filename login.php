@@ -30,7 +30,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])){
             
             $_SESSION['last_activity'] = time();
             $_SESSION['login_time'] = time();
-            header("Location: isi_berita.php");
+            header("Location: dashboard.php");
             exit();
         } else {
             echo "<script>alert('Password salah');window.location='login.php';</script>";
