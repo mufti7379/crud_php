@@ -4,8 +4,6 @@ include 'koneksi.php';
 
 $nama = $_SESSION['pengguna']['nama'];
 $user = $_SESSION['pengguna'];
-$id_user = $_SESSION['pengguna']['id'];
-
 
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -22,55 +20,83 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
+$id_user = (int) $_SESSION['pengguna']['id'];
 
-if(isset($_POST['Submit'])){
-    $id = $_POST['id_berita'];
-    $judul = $_POST['nama_berita'];
-    $isi = $_POST['isi'];
-    $foto_lama = $_POST['gambar_berita'];
-    $uploadStatus = $_POST['status'];
+if (isset($_POST['Submit'])) {
+    $id_berita   = (int) $_POST['id_berita'];
+    $judul       = $_POST['nama_berita'];
+    $isi         = $_POST['isi'];
+    $status      = $_POST['status'];
+    $id_kategori = (int) $_POST['kategori_berita'];
+    $id_user     = (int) $_SESSION['pengguna']['id'];
 
-    $folder =  "images/berita/";
-    $foto_baru = $foto_lama;
+    $folder = "images/berita/";
 
-    if(!empty($_FILES['gambar_berita']['name'])){
+    /* ambil foto lama */
+    $q = $conn->prepare(
+        "SELECT foto FROM berita WHERE id_berita=?"
+    );
+    $q->bind_param("i", $id_berita);
+    $q->execute();
+    $lama = $q->get_result()->fetch_assoc();
+
+    $foto_lama  = $lama['foto'] ?? null;
+    $foto_final = $foto_lama; // DEFAULT
+
+    /* jika upload foto baru */
+    if (!empty($_FILES['gambar_berita']['name'])) {
+
         $file = $_FILES['gambar_berita'];
-        $ukuran = $file['size'];
-        $error  = $file['error'];
         $ekstensi = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $valid = ['jpg','png','jpeg'];
+        $valid = ['jpg','jpeg','png'];
 
-        if(!in_array($ekstensi, $valid)){
+        if (!in_array($ekstensi, $valid)) {
             die("Format file tidak diizinkan");
-            exit();
         }
 
-        if($ukuran > 2 * 1024 * 1024){
+        if ($file['size'] > 2 * 1024 * 1024) {
             die("Ukuran foto maksimal 2MB");
-            exit();
         }
 
-        if($error != 0){
-            die("Upload Gagal");
-            exit();
+        if ($file['error'] !== 0) {
+            die("Upload gagal");
         }
 
-        $foto_baru = uniqid('berita_'). '.' .$ekstensi;
+        $foto_baru = uniqid('berita_') . '.' . $ekstensi;
         move_uploaded_file($file['tmp_name'], $folder . $foto_baru);
 
-        if($foto_lama && file_exists($folder.$foto_lama)){
-            unlink($folder.$foto_lama);
+        if ($foto_lama && file_exists($folder . $foto_lama)) {
+            unlink($folder . $foto_lama);
         }
 
-        $update = "UPDATE kategori SET judul=?,  foto=?, isi=?, id_user=?, id_kategori=?, status=? WHERE id_berita=?";
-        $kirim = $conn->prepare($update);
-        $kirim->bind_param("sssiisi", $judul, $foto_baru, $isi, $id_user, $id_kategori, $status, $id_berita);
-        $kirim->execute();
-
-        header("Location: isi_berita.php");
-        exit();
+        $foto_final = $foto_baru;
     }
+
+    /* update database */
+    $update = $conn->prepare(
+        "UPDATE berita 
+         SET judul=?, foto=?, isi=?, id_user=?, id_kategori=?, status=? 
+         WHERE id_berita=?"
+    );
+
+    $update->bind_param(
+        "sssiisi",
+        $judul,
+        $foto_final,
+        $isi,
+        $id_user,
+        $id_kategori,
+        $status,
+        $id_berita
+    );
+
+    $update->execute();
+
+    header("Location: isi_berita.php");
+    exit;
 }
+
+
 
 $id_berita = $_GET['id_berita'] ?? $_POST['id'] ?? null;
 
