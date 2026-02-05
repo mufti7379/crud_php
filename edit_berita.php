@@ -3,6 +3,9 @@ include 'config_session.php';
 include 'koneksi.php';
 
 $nama = $_SESSION['pengguna']['nama'];
+$user = $_SESSION['pengguna'];
+$id_user = $_SESSION['pengguna']['id'];
+
 
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -21,15 +24,15 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 $user = $_SESSION['pengguna'];
 
 if(isset($_POST['Submit'])){
-    $id = $_POST['id'];
-    $nama_baru = $_POST['nama_berita'];
+    $id = $_POST['id_berita'];
+    $judul = $_POST['nama_berita'];
     $isi = $_POST['isi'];
-    $foto = $_POST['foto'];
-    $status = $_POST['status'];
+    $foto_lama = $_POST['gambar_berita'];
+    $uploadStatus = $_POST['status'] ?? 'draft';
 
-    $update = "UPDATE kategori SET nama_kategori=?, deskripsi=? WHERE id_kategori=?";
+    $update = "UPDATE kategori SET judul=?, isi=?, id_user=?, id_kategori=?, status=? WHERE id_kategori=?";
     $kirim = $conn->prepare($update);
-    $kirim->bind_param("ssi", $nama_baru, $deskripsi_baru, $id);
+    $kirim->bind_param("ssi", $nama_baru, $deskripsi_baru, $id_user, $id_kategori);
     $kirim->execute();
 
     if($kirim->affected_rows > 0){
@@ -41,7 +44,7 @@ if(isset($_POST['Submit'])){
 $id_berita = $_GET['id_berita'] ?? $_POST['id'] ?? null;
 
 if($id_berita){
-    $query =  "SELECT id_berita, judul, isi, id_user, id_kategori, foto, status WHERE id_berita=?";
+    $query =  "SELECT id_berita, judul, isi, id_user, id_kategori, foto, status FROM berita WHERE id_berita=?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i",$id_berita);
     $stmt->execute();
@@ -129,11 +132,11 @@ if($id_berita){
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>Dashboard</a> 
             </li> 
             <li> 
-                <a href="isi_berita.php"  class="nav-link text-white"> 
+                <a href="isi_berita.php"  class="nav-link active"> 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Isi Berita
                 </a> 
             </li> 
-                <a href="kategori.php" class="nav-link active" aria-current="page"> 
+                <a href="kategori.php" class="nav-link text-white" aria-current="page"> 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Kategori
                 </a> 
             </li> 
@@ -157,34 +160,36 @@ if($id_berita){
         </div> 
     </aside>
     <main class="content p-3">
-        <h2 class="text-center mt-5">Input Berita BSIP</h2>
+        <h2 class="text-center mt-5">Halaman Edit Berita BSIP</h2>
         <form class="w-50 mx-auto mt-4" method="post" action="input_berita.php" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="<?php echo $id_berita ?> ">
+            <input type="hidden" name="id_berita" value="<?php echo $id_berita ?> ">
             <div class="mb-3">
                 <label for="namaBerita" class="form-label">Nama Berita</label>
-                <input type="text" class="form-control" id="namaKategori" name="nama_berita" placeholder="Masukkan nama berita">
+                <input type="text" class="form-control" id="namaKategori" name="nama_berita" value="<?= $hasil['judul']?>">
             </div>
             <div class="mb-3">
-                <label for="statusUpload" class="form-label">Status Upload</label>
-                <select name="status">
-                    <option value="draft">draft</option>
-                    <option value="publish">publish</option>
+                <label for="statusUpload" class="form-label" value="<?= $hasil['status'];?>">Status Upload</label>
+                <select name="status" class="form-control" id="statusUpload">
+                    <option value="draft"
+                        <?= ($hasil['status'] === 'draft') ? 'selected' : ''; ?>>
+                        draft
+                    </option>
+                    <option value="publish"
+                        <?= ($hasil['status'] === 'publish') ? 'selected' : ''; ?>>
+                        publish
+                    </option>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="isiBerita" class="form-label">Isi Berita</label>
-                <textarea class="form-control" id="deskripsiKategori" name="isi_berita" rows="15" placeholder="Masukkan isi berita"></textarea>
+                <textarea class="form-control" id="deskripsiKategori" name="isi_berita" rows="15"><?= $hasil['isi'];?></textarea>
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Pilih Kategori Berita</label>
-                <select class="form-control" id="kategoriBerita" name="kategori_berita">
+                <select class="form-control" id="kategoriBerita" name="kategori_berita" value="<?= $hasil['kategori'];?>">
                     <option value="">Pilih Kategori</option>
                     <?php
-                    $query = "SELECT * FROM kategori";
-                    $result = $conn->query($query);
-                    while($row = $result->fetch_assoc()){
-                        echo "<option value='".$row['id_kategori']."'>".$row['nama_kategori']."</option>";
-                    }
+                        echo "<option value='".$hasil['id_kategori']."'>".$hasil['nama_kategori']."</option>";
                     ?>
                 </select>
             </div>
@@ -211,10 +216,10 @@ if($id_berita){
                     <a class="nav-link text-white" href="dashboard.php">Dashboard</a>
                 </li>
                 <li>
-                    <a class="nav-link text-white" href="isi_berita.php">Isi Berita</a>
+                    <a class="nav-link active" href="isi_berita.php">Isi Berita</a>
                 </li>
                 <li>
-                    <a class="nav-link active" href="kategori.php">Kategori</a>
+                    <a class="nav-link text-white" href="kategori.php">Kategori</a>
                 </li>
                 <li>
                     <a class="nav-link text-white" href="#">User</a>
