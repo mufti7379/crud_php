@@ -173,7 +173,7 @@ $user = $_SESSION['pengguna'];
                 <td>No.</td>
                 <td>Nama Berita</td>
                 <td>Deskripsi Berita</td>
-                <td>Nama Foto</td>
+                <td>Status Upload</td>
                 <td>Aksi</td>
             </tr>
             <?php 
@@ -186,7 +186,7 @@ $user = $_SESSION['pengguna'];
                 <td class="p-3"><?php echo $no++; ?></td>
                 <td class="p-3"><?php echo $row['judul']; ?></td>
                 <td class="p-3"><?php echo $row['isi']; ?></td>
-                <td class="p-3"><?php echo $row['foto']; ?></td>
+                <td class="p-3"><?php echo $row['status']; ?></td>
                 <td class="p-3">
                     <div class="d-flex gap-2 justify-content-center">
                         <a href="edit_berita.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>

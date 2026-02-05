@@ -11,7 +11,7 @@ $judul = $_POST['nama_berita'] ?? null;
 $isi = $_POST['isi_berita'] ?? null;
 $foto = $_POST['foto'] ?? null;
 $id_kategori = $_POST['kategori_berita'] ?? null;
-$uploadStatus = $_POST['status'] ?? 'draft';
+$status = $_POST['status'] ?? 'draft';
 
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -28,7 +28,7 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 
-// $status = UploadStatus::tryFrom($uploadStatus);
+
 $all = "SELECT * FROM berita WHERE judul=?";
 $stmt = $conn->prepare($all);
 $stmt->bind_param("s",$judul);
@@ -47,6 +47,7 @@ if(isset($_POST['Submit']) && !empty($_FILES['gambar_berita']['name'])) {
     }
 
     $file   = $_FILES['gambar_berita'];
+    $nama_file = $file['name'];
     $ukuran = $file['size'];
     $error  = $file['error'];
     $tmp_file = $file['tmp_name'];
@@ -70,7 +71,7 @@ if(isset($_POST['Submit']) && !empty($_FILES['gambar_berita']['name'])) {
 
     $nama_foto = uniqid('berita_'). '.' . $ekstensi;
 
-    $folder = "../images/berita/";
+    $folder = "images/berita/";
     if(!is_dir($folder)){
         mkdir($folder, 0777, true);
     }
@@ -230,7 +231,7 @@ $user = $_SESSION['pengguna'];
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Upload Foto (JPG/PNG)</label>
-                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept="images/berita/*" required>
+                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept=".png,.jpg" required>
             </div>
             
             <button type="submit" name="Submit" class="btn btn-primary">Simpan</button>
