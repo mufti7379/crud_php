@@ -56,6 +56,7 @@ $user = $_SESSION['pengguna'];
             overflow-y: auto;
             background: #f8f9fa;
             padding: 1rem;
+            position: relative;
         }
 
         .container {
@@ -66,13 +67,11 @@ $user = $_SESSION['pengguna'];
             box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
         }
 
-        .table-scale {
-            width: 100%;
-            margin-top: 4px;
-        }
-
-        .table-isi {
-            padding: 3px;
+        .deskripsi {
+            max-width: 500px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .sidebar .nav-link.active,
@@ -81,9 +80,9 @@ $user = $_SESSION['pengguna'];
             color: #fff;
         }
 
-        @media (max-width: 992px) {
-            .sidebar {
-                display: none;
+        @media (max-width: 1200px) {
+            .deskripsi {
+                max-width: 70px;
             }
 
             .content {
@@ -92,17 +91,21 @@ $user = $_SESSION['pengguna'];
             }
         }
 
-        @media (max-width: 470px){
+        @media (max-width: 768px){
             .text-center {
                 font-size: 11px;
             }
-            .content {
-
+            .table-responsive {
                 font-size: 11px;
             }
+
+            .deskripsi {
+                max-width: 20px;
+            }
+            
             .btn {
                 font-size: 11px;
-                height: 50px;
+                height: 30px;
             }
         }
     </style>
@@ -157,47 +160,49 @@ $user = $_SESSION['pengguna'];
             </ul> 
         </div> 
     </aside>
-    <main class="content p-4">
+    <main class="content ">
         <h2 class="text-center mt-2">Pengaturan Isi Berita BSIP</h2>
         <div class="input-group mx-auto w-75">
             <input type="text" class="form-control" placeholder="Search..." aria-label="Search input" aria-describedby="button-addon2">
             <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
         </div>
             <div class="container">
-            <div class="button-input">
+            <div class="button-input mb-2">
                 <a href="input_berita.php" class="btn btn-primary mt-2">+ Tambah Berita</a>
             </div>
-            <table class="table table-bordered mt-4 w-200 mx-auto text-center">
-            <tr>
-                <td>No.</td>
-                <td>Nama Berita</td>
-                <td>Deskripsi Berita</td>
-                <td>Status Upload</td>
-                <td>Aksi</td>
-            </tr>
-            <?php 
-            $no = 1;
-            $query = "SELECT * FROM berita";
-            $result = $conn->query($query);
-            while($row = $result->fetch_assoc()){
-            ?>
-            <tr>
-                <td class="p-3"><?php echo $no++; ?></td>
-                <td class="p-3"><?php echo $row['judul']; ?></td>
-                <td class="p-3"><?php echo $row['isi']; ?></td>
-                <td class="p-3"><?php echo $row['status']; ?></td>
-                <td class="p-3">
-                    <div class="d-flex gap-2 justify-content-center">
-                        <a href="edit_berita.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>
-                        <form action="isi_berita.php" method="post">
-                            <input type="hidden" name="id_berita" value="<?php $row["id_berita"]?>">
-                            <button type="submit" name="#" class="btn btn-danger btn-sm">Hapus</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            <?php }?>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                <tr>
+                    <td>No.</td>
+                    <td>Nama Berita</td>
+                    <td>Deskripsi Berita</td>
+                    <td>Status Upload</td>
+                    <td>Aksi</td>
+                </tr>
+                <?php 
+                $no = 1;
+                $query = "SELECT * FROM berita";
+                $result = $conn->query($query);
+                while($row = $result->fetch_assoc()){
+                ?>
+                <tr>
+                    <td class="p-3"><?php echo $no++; ?></td>
+                    <td class="p-3"><?php echo $row['judul']; ?></td>
+                    <td class="p-3 deskripsi"><?php echo $row['isi']; ?></td>
+                    <td class="p-3"><?php echo $row['status']; ?></td>
+                    <td class="p-3">
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a href="edit_berita.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>
+                            <form action="isi_berita.php" method="post">
+                                <input type="hidden" name="id_berita" value="<?php $row["id_berita"]?>">
+                                <button type="submit" name="#" class="btn btn-danger btn-sm">Hapus</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <?php }?>
+                </table>
+            </div>
             </div>
         </div>
     </main>

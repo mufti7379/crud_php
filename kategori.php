@@ -71,6 +71,7 @@ if (isset($_POST['Delete'])) {
             overflow-y: auto;
             background: #f8f9fa;
             padding: 1rem;
+            position: relative;
         }
 
         .container {
@@ -81,13 +82,11 @@ if (isset($_POST['Delete'])) {
             box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
         }
 
-        .table-scale {
-            width: 100%;
-            margin-top: 4px;
-        }
-
-        .table-isi {
-            padding: 3px;
+        .deskripsi {
+            max-width: 500px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .sidebar .nav-link.active,
@@ -96,9 +95,9 @@ if (isset($_POST['Delete'])) {
             color: #fff;
         }
 
-        @media (max-width: 992px) {
-            .sidebar {
-                display: none;
+        @media (max-width: 1200px) {
+            .deskripsi {
+                max-width: 70px;
             }
 
             .content {
@@ -107,17 +106,21 @@ if (isset($_POST['Delete'])) {
             }
         }
 
-        @media (max-width: 470px){
+        @media (max-width: 768px){
             .text-center {
                 font-size: 11px;
             }
-            .content {
-
+            .table-responsive {
                 font-size: 11px;
             }
+
+            .deskripsi {
+                max-width: 20px;
+            }
+            
             .btn {
                 font-size: 11px;
-                height: 50px;
+                height: 30px;
             }
         }
     </style>
