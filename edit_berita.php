@@ -186,11 +186,20 @@ if($id_berita){
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Pilih Kategori Berita</label>
-                <select class="form-control" id="kategoriBerita" name="kategori_berita" value="<?= $hasil['kategori'];?>">
+                <select class="form-control" id="kategoriBerita" name="kategori_berita">
                     <option value="">Pilih Kategori</option>
-                    <?php
-                        echo "<option value='".$hasil['id_kategori']."'>".$hasil['nama_kategori']."</option>";
-                    ?>
+                    <?php 
+                        $queryKategory = "SELECT * FROM kategori";
+                        $stmt1 = $conn->prepare($queryKategory);
+                        $stmt1->execute();
+                        $resultKategori = $stmt1->get_result();
+                        while ($row1 = $resultKategori->fetch_assoc()) { ?>
+                        <option value="<?= $row1['id_kategori']; ?>"
+                            <?= (isset($hasil['id_kategori']) && $row1['id_kategori'] == $hasil['id_kategori']) 
+                            ? 'selected' : '';?>>
+                            <?= htmlspecialchars($row1['nama_kategori']); ?>
+                        </option>
+                    <?php } ?>
                 </select>
             </div>
             <div class="mb-3">

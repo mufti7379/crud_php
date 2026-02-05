@@ -1,5 +1,6 @@
 <?php
 include 'config_session.php';
+include 'koneksi.php';
 
 $nama = $_SESSION['pengguna']['nama'];
 
@@ -18,6 +19,9 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -129,7 +133,19 @@ $user = $_SESSION['pengguna'];
     </aside>
     <main class="content p-3">
         <h2 class="text-center mt-2">Selamat Datang <?php echo htmlspecialchars($nama); ?></h2>
-        <canvas id="myChart" width="606" height="303" style="display: block; box-sizing: border-box; height: 303px; width: 606px;"></canvas>
+            <?php 
+            $no = 1;
+            $query = "SELECT * FROM berita WHERE status='publish'";
+            $result = $conn->query($query);
+            while($row = $result->fetch_assoc()){
+            ?>
+            <div class="card" style="width: 18rem;">
+                <img src="images/berita/<?= htmlspecialchars($row['foto']); ?>" class="card-img-top" alt="gambar_berita">
+                <div class="card-body">
+                    <p class="card-text"><?= htmlspecialchars($row['isi']); ?></p>
+                </div>
+            </div>
+            <?php } ?>
     </main>
     </div>
     
