@@ -18,7 +18,37 @@ header("Cache-Control: no-cache, no-store, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
-$user = $_SESSION['pengguna'];
+$user= $_SESSION['pengguna'];
+
+if(isset($_POST['delete'])) {
+    $id_berita = $_POST['id_berita'];
+
+    $data = "SELECT foto FROM berita WHERE id_berita=?";
+    $data_foto = $conn->prepare($data);
+    $data_foto->bind_param("i", $id_berita);
+    $data_foto->execute();
+    $result_foto = $data_foto->get_result();
+    $hasil_foto  = $result_foto->fetch_assoc(); 
+
+    if($hasil_foto){
+        $foto_lama = $hasil_foto['foto'];
+        $link = "images/berita/" . $foto_lama;
+        
+        if($foto_lama && file_exists($link)){
+            unlink($link);
+        }
+    }
+    
+
+    $stmt = $conn->prepare(
+        "DELETE FROM berita WHERE id_berita=?"
+    );
+    $stmt->bind_param("i", $id_berita);
+    $stmt->execute();
+
+    header("Location: isi_berita.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -191,13 +221,15 @@ $user = $_SESSION['pengguna'];
                     <td class="p-3 deskripsi"><?php echo $row['isi']; ?></td>
                     <td class="p-3"><?php echo $row['status']; ?></td>
                     <td class="p-3">
-                        <div class="d-flex gap-2 justify-content-center">
-                            <a href="edit_berita.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>
-                            <form action="isi_berita.php" method="post">
-                                <input type="hidden" name="id_berita" value="<?php $row["id_berita"]?>">
-                                <button type="submit" name="#" class="btn btn-danger btn-sm">Hapus</button>
-                            </form>
-                        </div>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="edit_kategori.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>
+                        <br>
+                        <form method="post" action="isi_berita.php" onsubmit="return confirm('Yakin ingin menghapus berita ini?')">
+                        <input type="hidden" name="id_berita" value="<?php echo $row['id_berita']; ?> ">
+                        <button type="submit" name="delete" class="btn btn-danger btn-sm">Hapus</button>
+                        </form>
+                    </div>
+            
                     </td>
                 </tr>
                 <?php }?>
