@@ -52,11 +52,11 @@ if(isset($_POST['Submit'])) {
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="../admin/assets/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+<style>
         html, body {
             height: 100%;
         }
-        .dashboard-content {
+         .dashboard-content {
             display: flex;
             min-height: 100vh;
         }
@@ -70,9 +70,16 @@ if(isset($_POST['Submit'])) {
             top: 0;
         }
 
+
         .content {
             flex-grow: 1;
             background: #f8f9fa;
+            width: 100%;
+            max-width: 1500px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .sidebar .nav-link.active,
@@ -90,6 +97,7 @@ if(isset($_POST['Submit'])) {
                 width: 75%;
             }
         }
+
     </style>
 </head>
 <body>

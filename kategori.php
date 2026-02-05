@@ -49,6 +49,7 @@ if (isset($_POST['Delete'])) {
         html, body {
             height: 100%;
         }
+
         .dashboard-content {
             display: flex;
             min-height: 100vh;
@@ -59,20 +60,34 @@ if (isset($_POST['Delete'])) {
             min-height: 100vh;
             background: #212529;
             color: #fff;
-            position: sticky;
+            position: fixed;
+            overflow-y: auto;
             top: 0;
         }
 
         .content {
-            flex-grow: 1;
+            margin-left: 280px;
+            height: 100vh;
+            overflow-y: auto;
             background: #f8f9fa;
+            padding: 1rem;
         }
 
         .container {
             background: rgb(223, 194, 194);
+            margin-top: 50px;
             padding: 30px;
             border-radius: 5px;
             box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
+        }
+
+        .table-scale {
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .table-isi {
+            padding: 3px;
         }
 
         .sidebar .nav-link.active,
@@ -81,25 +96,28 @@ if (isset($_POST['Delete'])) {
             color: #fff;
         }
 
-        @media (min-width: 992px) {
+        @media (max-width: 992px) {
             .sidebar {
                 display: none;
             }
-        }
 
-        @media (max-width: 768px){
             .content {
-                width: 75%;
+                width: 100%;
+                margin-left: 0;
             }
         }
 
-        @media (max-width: 400px){
+        @media (max-width: 470px){
             .text-center {
-                font-size: 25px;
+                font-size: 11px;
             }
             .content {
-                width: 50%;
+
                 font-size: 11px;
+            }
+            .btn {
+                font-size: 11px;
+                height: 50px;
             }
         }
     </style>

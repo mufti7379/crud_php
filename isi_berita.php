@@ -45,13 +45,17 @@ $user = $_SESSION['pengguna'];
             min-height: 100vh;
             background: #212529;
             color: #fff;
-            position: sticky;
+            position: fixed;
+            overflow-y: auto;
             top: 0;
         }
 
         .content {
-            flex-grow: 1;
+            margin-left: 280px;
+            height: 100vh;
+            overflow-y: auto;
             background: #f8f9fa;
+            padding: 1rem;
         }
 
         .container {
@@ -77,15 +81,14 @@ $user = $_SESSION['pengguna'];
             color: #fff;
         }
 
-        @media (min-width: 992px) {
+        @media (max-width: 992px) {
             .sidebar {
                 display: none;
             }
-        }
 
-        @media (max-width: 768px){
             .content {
-                width: 5%;
+                width: 100%;
+                margin-left: 0;
             }
         }
 
@@ -94,17 +97,13 @@ $user = $_SESSION['pengguna'];
                 font-size: 11px;
             }
             .content {
-                width: 5%;
+
                 font-size: 11px;
             }
             .btn {
                 font-size: 11px;
                 height: 50px;
             }
-        }
-
-        @media (max-width:420px){
-            
         }
     </style>
 </head>
