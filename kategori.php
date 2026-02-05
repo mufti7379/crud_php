@@ -4,6 +4,7 @@ include 'koneksi.php';
 
 $nama = $_SESSION['pengguna']['nama'];
 
+
 if(!isLoggedIn()) {
     header("Cache-Control: no-cache, no-store, must-revalidate");
     header("Pragma: no-cache");
@@ -19,6 +20,19 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
+
+if (isset($_POST['Delete'])) {
+    $id_kategori = $_POST['id_kategori'];
+
+    $stmt = $conn->prepare(
+        "DELETE FROM kategori WHERE id_kategori=?"
+    );
+    $stmt->bind_param("i", $id_kategori);
+    $stmt->execute();
+
+    header("Location: kategori.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -146,7 +160,7 @@ $user = $_SESSION['pengguna'];
             <div class="button-input">
                 <a href="input_kategori.php" class="btn btn-primary mt-2">+ Tambah Kategori</a>
             </div>
-            <table class="table table-bordered mt-4 w-200 mx-auto">
+            <table class="table table-bordered mt-4 w-200 mx-auto text-center">
             <tr>
                 <td>No.</td>
                 <td>Nama Kategori</td>
@@ -164,8 +178,14 @@ $user = $_SESSION['pengguna'];
                 <td class="p-3"><?php echo $row['nama_kategori']; ?></td>
                 <td class="p-3"><?php echo $row['deskripsi']; ?></td>
                 <td class="p-3">
+                    <div class="d-flex gap-2 justify-content-center">
                     <a href="edit_kategori.php?id_kategori=<?= $row['id_kategori']; ?>" class="btn btn-sm btn-warning" >Edit</a>
-                    <a href="#" class="btn btn-sm btn-danger" >Hapus</a>
+                    <br>
+                    <form method="post" action="kategori.php" onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
+                        <input type="hidden" name="id_kategori" value="<?= $row['id_kategori']; ?>">
+                        <button type="submit" name="Delete" class="btn btn-danger btn-sm">Hapus</button>
+                    </form>
+                    </div>
                 </td>
             </tr>
             <?php }?>

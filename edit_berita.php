@@ -19,13 +19,49 @@ header("Pragma: no-cache");
 header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
 $user = $_SESSION['pengguna'];
+
+if(isset($_POST['Submit'])){
+    $id = $_POST['id'];
+    $nama_baru = $_POST['nama_berita'];
+    $isi = $_POST['isi'];
+    $foto = $_POST['foto'];
+    $status = $_POST['status'];
+
+    $update = "UPDATE kategori SET nama_kategori=?, deskripsi=? WHERE id_kategori=?";
+    $kirim = $conn->prepare($update);
+    $kirim->bind_param("ssi", $nama_baru, $deskripsi_baru, $id);
+    $kirim->execute();
+
+    if($kirim->affected_rows > 0){
+        header("Location: isi_berita.php");
+        exit();
+    }
+}
+
+$id_berita = $_GET['id_berita'] ?? $_POST['id'] ?? null;
+
+if($id_berita){
+    $query =  "SELECT id_berita, judul, isi, id_user, id_kategori, foto, status WHERE id_berita=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i",$id_berita);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $hasil = $result->fetch_assoc();
+
+    if(!$hasil){
+        die("Data Berita Tidak Ditemukan");
+    }
+}else{
+    die("ID Berita tidak ditemukan");
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin Berita BSIP</title>
+    <title>Halaman Edit Kategori Berita BSIP</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -34,7 +70,6 @@ $user = $_SESSION['pengguna'];
         html, body {
             height: 100%;
         }
-
         .dashboard-content {
             display: flex;
             min-height: 100vh;
@@ -54,23 +89,6 @@ $user = $_SESSION['pengguna'];
             background: #f8f9fa;
         }
 
-        .container {
-            background: rgb(223, 194, 194);
-            margin-top: 50px;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(238, 27, 27, 0.05);
-        }
-
-        .table-scale {
-            width: 100%;
-            margin-top: 4px;
-        }
-
-        .table-isi {
-            padding: 3px;
-        }
-
         .sidebar .nav-link.active,
         .sidebar .nav-link.active:hover {
             background-color: #0d6efd;
@@ -81,30 +99,10 @@ $user = $_SESSION['pengguna'];
             .sidebar {
                 display: none;
             }
-        }
 
-        @media (max-width: 768px){
-            .content {
-                width: 5%;
+            main {
+                width: 75%;
             }
-        }
-
-        @media (max-width: 470px){
-            .text-center {
-                font-size: 11px;
-            }
-            .content {
-                width: 5%;
-                font-size: 11px;
-            }
-            .btn {
-                font-size: 11px;
-                height: 50px;
-            }
-        }
-
-        @media (max-width:420px){
-            
         }
     </style>
 </head>
@@ -118,8 +116,8 @@ $user = $_SESSION['pengguna'];
         </div>
     </nav>
 
-    <div class="dashboard-content">
     <!-- sidebar dekstop -->
+    <div class="dashboard-content">
     <aside class="sidebar d-none d-lg-flex flex-column p-3 text-bg-dark">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"> 
         <svg class="bi pe-none me-2" width="40" height="32" aria-hidden="true"><use xlink:href="#bootstrap"></use></svg> <span class="fs-4">Berita BSIP</span> 
@@ -127,15 +125,15 @@ $user = $_SESSION['pengguna'];
         <hr> 
         <ul class="nav nav-pills flex-column mb-auto"> 
             <li class="nav-item"> 
-                <a href="dashboard.php" class="nav-link text-white"> 
+                <a href="dashboard.php" class="nav-link text-white" > 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>Dashboard</a> 
             </li> 
             <li> 
-                <a href="isi_berita.php"  class="nav-link active" aria-current="page"> 
+                <a href="isi_berita.php"  class="nav-link text-white"> 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Isi Berita
                 </a> 
             </li> 
-                <a href="kategori.php" class="nav-link text-white"> 
+                <a href="kategori.php" class="nav-link active" aria-current="page"> 
                 <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#dashboard"></use></svg>Kategori
                 </a> 
             </li> 
@@ -158,49 +156,45 @@ $user = $_SESSION['pengguna'];
             </ul> 
         </div> 
     </aside>
-    <main class="content p-4">
-        <h2 class="text-center mt-2">Pengaturan Isi Berita BSIP</h2>
-        <div class="input-group mx-auto w-75">
-            <input type="text" class="form-control" placeholder="Search..." aria-label="Search input" aria-describedby="button-addon2">
-            <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
-        </div>
-            <div class="container">
-            <div class="button-input">
-                <a href="input_berita.php" class="btn btn-primary mt-2">+ Tambah Berita</a>
+    <main class="content p-3">
+        <h2 class="text-center mt-5">Input Berita BSIP</h2>
+        <form class="w-50 mx-auto mt-4" method="post" action="input_berita.php" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="<?php echo $id_berita ?> ">
+            <div class="mb-3">
+                <label for="namaBerita" class="form-label">Nama Berita</label>
+                <input type="text" class="form-control" id="namaKategori" name="nama_berita" placeholder="Masukkan nama berita">
             </div>
-            <table class="table table-bordered mt-4 w-200 mx-auto text-center">
-            <tr>
-                <td>No.</td>
-                <td>Nama Berita</td>
-                <td>Deskripsi Berita</td>
-                <td>Nama Foto</td>
-                <td>Aksi</td>
-            </tr>
-            <?php 
-            $no = 1;
-            $query = "SELECT * FROM berita";
-            $result = $conn->query($query);
-            while($row = $result->fetch_assoc()){
-            ?>
-            <tr>
-                <td class="p-3"><?php echo $no++; ?></td>
-                <td class="p-3"><?php echo $row['judul']; ?></td>
-                <td class="p-3"><?php echo $row['isi']; ?></td>
-                <td class="p-3"><?php echo $row['foto']; ?></td>
-                <td class="p-3">
-                    <div class="d-flex gap-2 justify-content-center">
-                        <a href="edit_berita.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>
-                        <form action="isi_berita.php" method="post">
-                            <input type="hidden" name="id_berita" value="<?php $row["id_berita"]?>">
-                            <button type="submit" name="#" class="btn btn-danger btn-sm">Hapus</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            <?php }?>
-            </table>
+            <div class="mb-3">
+                <label for="statusUpload" class="form-label">Status Upload</label>
+                <select name="status">
+                    <option value="draft">draft</option>
+                    <option value="publish">publish</option>
+                </select>
             </div>
-        </div>
+            <div class="mb-3">
+                <label for="isiBerita" class="form-label">Isi Berita</label>
+                <textarea class="form-control" id="deskripsiKategori" name="isi_berita" rows="15" placeholder="Masukkan isi berita"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Pilih Kategori Berita</label>
+                <select class="form-control" id="kategoriBerita" name="kategori_berita">
+                    <option value="">Pilih Kategori</option>
+                    <?php
+                    $query = "SELECT * FROM kategori";
+                    $result = $conn->query($query);
+                    while($row = $result->fetch_assoc()){
+                        echo "<option value='".$row['id_kategori']."'>".$row['nama_kategori']."</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Upload Foto (JPG/PNG)</label>
+                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept="images/berita/*" required>
+            </div>
+            
+            <button type="submit" name="Submit" class="btn btn-primary">Simpan</button>
+        </form>
     </main>
     </div>
     
@@ -217,15 +211,16 @@ $user = $_SESSION['pengguna'];
                     <a class="nav-link text-white" href="dashboard.php">Dashboard</a>
                 </li>
                 <li>
-                    <a class="nav-link active" href="isi_berita.php">Isi Berita</a>
+                    <a class="nav-link text-white" href="isi_berita.php">Isi Berita</a>
                 </li>
                 <li>
-                    <a class="nav-link text-white" href="kategori.php">Kategori</a>
+                    <a class="nav-link active" href="kategori.php">Kategori</a>
                 </li>
                 <li>
                     <a class="nav-link text-white" href="#">User</a>
                 </li>
             </ul>
+        
         <!-- admin profile mobile -->
         <div class="d-flex align-items-center gap-2">
             <img src="https://github.com/mdo.png" alt="" width="36" height="36" class="rounded-circle me-2"> 
@@ -234,8 +229,8 @@ $user = $_SESSION['pengguna'];
             <strong><?php echo htmlspecialchars($nama)?></strong> 
             </a> 
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">  
-                <li><a class="dropdown-item" href="#">Profile</a></li> 
-                <li><a class="dropdown-item" href="logout.php">Sign out</a></li> 
+                <li><a href="#">Profile</a></li> 
+                <li><a href="logout.php" class="btn btn-danger">Logout</a></li> 
             </ul> 
             </div> 
         </div>
