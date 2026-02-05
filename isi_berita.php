@@ -222,7 +222,7 @@ if(isset($_POST['delete'])) {
                     <td class="p-3"><?php echo $row['status']; ?></td>
                     <td class="p-3">
                     <div class="d-flex gap-2 justify-content-center">
-                        <a href="edit_kategori.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>
+                        <a href="edit_berita.php?id_berita=<?= $row['id_berita']; ?>" class="btn btn-sm btn-warning" >Edit</a>
                         <br>
                         <form method="post" action="isi_berita.php" onsubmit="return confirm('Yakin ingin menghapus berita ini?')">
                         <input type="hidden" name="id_berita" value="<?php echo $row['id_berita']; ?> ">

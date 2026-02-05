@@ -28,14 +28,45 @@ if(isset($_POST['Submit'])){
     $judul = $_POST['nama_berita'];
     $isi = $_POST['isi'];
     $foto_lama = $_POST['gambar_berita'];
-    $uploadStatus = $_POST['status'] ?? 'draft';
+    $uploadStatus = $_POST['status'];
 
-    $update = "UPDATE kategori SET judul=?, isi=?, id_user=?, id_kategori=?, status=? WHERE id_kategori=?";
-    $kirim = $conn->prepare($update);
-    $kirim->bind_param("ssi", $nama_baru, $deskripsi_baru, $id_user, $id_kategori);
-    $kirim->execute();
+    $folder =  "images/berita/";
+    $foto_baru = $foto_lama;
 
-    if($kirim->affected_rows > 0){
+    if(!empty($_FILES['gambar_berita']['name'])){
+        $file = $_FILES['gambar_berita'];
+        $ukuran = $file['size'];
+        $error  = $file['error'];
+        $ekstensi = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $valid = ['jpg','png','jpeg'];
+
+        if(!in_array($ekstensi, $valid)){
+            die("Format file tidak diizinkan");
+            exit();
+        }
+
+        if($ukuran > 2 * 1024 * 1024){
+            die("Ukuran foto maksimal 2MB");
+            exit();
+        }
+
+        if($error != 0){
+            die("Upload Gagal");
+            exit();
+        }
+
+        $foto_baru = uniqid('berita_'). '.' .$ekstensi;
+        move_uploaded_file($file['tmp_name'], $folder . $foto_baru);
+
+        if($foto_lama && file_exists($folder.$foto_lama)){
+            unlink($folder.$foto_lama);
+        }
+
+        $update = "UPDATE kategori SET judul=?,  foto=?, isi=?, id_user=?, id_kategori=?, status=? WHERE id_berita=?";
+        $kirim = $conn->prepare($update);
+        $kirim->bind_param("sssiisi", $judul, $foto_baru, $isi, $id_user, $id_kategori, $status, $id_berita);
+        $kirim->execute();
+
         header("Location: isi_berita.php");
         exit();
     }
@@ -199,7 +230,7 @@ if($id_berita){
     </aside>
     <main class="content p-3">
         <h2 class="text-center mt-5">Halaman Edit Berita BSIP</h2>
-        <form class="w-50 mx-auto mt-4" method="post" action="input_berita.php" enctype="multipart/form-data">
+        <form class="w-50 mx-auto mt-4" method="post" action="edit_berita.php" enctype="multipart/form-data">
             <input type="hidden" name="id_berita" value="<?php echo $id_berita ?> ">
             <div class="mb-3">
                 <label for="namaBerita" class="form-label">Nama Berita</label>
@@ -207,20 +238,14 @@ if($id_berita){
             </div>
             <div class="mb-3">
                 <label for="statusUpload" class="form-label" value="<?= $hasil['status'];?>">Status Upload</label>
-                <select name="status" class="form-control" id="statusUpload">
-                    <option value="draft"
-                        <?= ($hasil['status'] === 'draft') ? 'selected' : ''; ?>>
-                        draft
-                    </option>
-                    <option value="publish"
-                        <?= ($hasil['status'] === 'publish') ? 'selected' : ''; ?>>
-                        publish
-                    </option>
+                <select name="status">
+                    <option value="draft" <?= $hasil['status']=='draft'?'selected':''; ?>>draft</option>
+                    <option value="publish" <?= $hasil['status']=='publish'?'selected':''; ?>>publish</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="isiBerita" class="form-label">Isi Berita</label>
-                <textarea class="form-control" id="deskripsiKategori" name="isi_berita" rows="15"><?= $hasil['isi'];?></textarea>
+                <textarea class="form-control" id="deskripsiKategori" name="isi" rows="15"><?= $hasil['isi'];?></textarea>
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Pilih Kategori Berita</label>
@@ -241,10 +266,14 @@ if($id_berita){
                 </select>
             </div>
             <div class="mb-3">
-                <label for="formFile" class="form-label">Upload Foto (JPG/PNG)</label>
-                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept="images/berita/*" required>
+                <label class="form-label">Foto Saat ini</label><br>
+                <img src="images/berita/<?= htmlspecialchars($hasil['foto'])?>" width="150" class="img-thumbnail mb-2">
             </div>
-            
+            <div class="mb-3">
+                <label class="form-label">Ganti Foto (Opsional)</label><br>
+                <input type="file" class="form-control" name="gambar_berita" accept=".jpg,.jpeg,.png">
+                <small class="text-muted">Kosongkan jika tidak ingin mengganti foto</small>
+            </div>
             <button type="submit" name="Submit" class="btn btn-primary">Simpan</button>
         </form>
     </main>

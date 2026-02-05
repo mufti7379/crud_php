@@ -268,7 +268,7 @@ $user = $_SESSION['pengguna'];
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Upload Foto (JPG/PNG)</label>
-                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept=".png,.jpg" required>
+                <input type="file" class="form-control" id="gambarBerita" name="gambar_berita" accept=".jpg,.jpeg,.png" required>
             </div>
             
             <button type="submit" name="Submit" class="btn btn-primary">Simpan</button>
